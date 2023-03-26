@@ -5,6 +5,8 @@ import { App } from "./App";
 import { setup } from "./mud/setup";
 import { MUDProvider } from "./MUDContext";
 import { ComponentBrowser } from "./ComponentBrowser";
+import { TerrainProvider } from "./context/TerrainContext";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const rootElement = document.getElementById("react-root");
 if (!rootElement) throw new Error("React root not found");
@@ -14,7 +16,11 @@ const root = ReactDOM.createRoot(rootElement);
 setup().then((result) => {
   root.render(
     <MUDProvider {...result}>
-      <App />
+      <TerrainProvider> 
+        <ChakraProvider>
+            <App />
+        </ChakraProvider>
+      </TerrainProvider>
       {import.meta.env.DEV ? <ComponentBrowser /> : null}
     </MUDProvider>
   );

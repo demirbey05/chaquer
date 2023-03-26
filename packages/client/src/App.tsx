@@ -1,17 +1,17 @@
 import { SingletonID, TxQueue } from "@latticexyz/network";
 import { Type, World } from "@latticexyz/recs";
-import { SystemTypes } from "contracts/types/SystemTypes";
 import { contractComponents } from "./mud/components";
 import { useMUD } from "./MUDContext";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { useComponentValue } from "@latticexyz/react";
-
-type Props = {
-  world?: World;
-  systems: TxQueue<SystemTypes>;
-  components: typeof contractComponents;
-};
+import Menu from './pages/menu/index';
+import Game from './pages/game/index';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
 export const App = () => {
   const { components, systems, singletonEntity } = useMUD();
@@ -27,8 +27,16 @@ export const App = () => {
 
   return (
     <>
-      <h1>Hello</h1>
-      <button onClick={handleClick}>Send tx </button>
+      <Router>
+        <Switch>
+          <Route exact path="/game">
+            <Game />
+          </Route>
+          <Route path="/">
+            <Menu />
+          </Route>
+        </Switch>
+    </Router>
     </>
   );
 };

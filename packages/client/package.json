@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
@@ -26,17 +25,22 @@
     "vite": "^3.2.3"
   },
   "dependencies": {
-    
-    "@latticexyz/utils": "1.41.0",
-     "@improbable-eng/grpc-web": "^0.15.0",
+    "@chakra-ui/icons": "^2.0.17",
+    "@chakra-ui/react": "^2.5.3",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@improbable-eng/grpc-web": "^0.15.0",
     "@latticexyz/ecs-browser": "^1.32.0",
     "@latticexyz/network": "^1.32.0",
+    "@latticexyz/react": "1.41.0",
     "@latticexyz/recs": "^1.32.0",
     "@latticexyz/services": "^1.32.0",
     "@latticexyz/std-client": "^1.32.0",
-    "@latticexyz/react": "1.41.0",
+    "@latticexyz/utils": "1.41.0",
+    "@types/react-router-dom": "^5.3.3",
     "async-mutex": "^0.4.0",
     "ethers": "^5.7.2",
+    "framer-motion": "^10.9.1",
     "mobx": "^6.7.0",
     "mobx-react-lite": "^3.4.0",
     "nice-grpc": "^2.0.1",
@@ -45,6 +49,8 @@
     "proxy-deep": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-indiana-drag-scroll": "2.2.0",
+    "react-router-dom": "5.3.4",
     "react-toastify": "^9.1.1",
     "tailwind-merge": "^1.8.1",
     "threads": "^1.7.0"
