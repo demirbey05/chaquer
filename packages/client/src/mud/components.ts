@@ -15,7 +15,7 @@ export const contractComponents = {
     id: "MapConfig",
     metadata: { contractId: "component.MapConfig" },
   }),
-  Positiion: defineCoordComponent(world, {
+  Position: defineCoordComponent(world, {
     id: "Position",
     metadata: {
       contractId: "component.Position",
