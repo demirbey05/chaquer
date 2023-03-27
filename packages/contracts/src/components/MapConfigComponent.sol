@@ -26,7 +26,9 @@ contract MapConfigComponent is BareComponent {
   }
 
   function set(bytes memory terrainPart) public {
-    set(SingletonID, terrainPart);
+    entityToValue[SingletonID] = abi.encodePacked(entityToValue[SingletonID], terrainPart);
+    currentTerrainLength = currentTerrainLength + terrainPart.length;
+    IWorld(world).registerComponentValueSet(SingletonID, entityToValue[SingletonID]);
   }
 
   function getValue() public view returns (bytes memory) {
