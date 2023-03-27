@@ -14,7 +14,9 @@ import { flatten2D } from "../../utils/terrainArray";
 import { ethers, Contract } from "ethers";
 import { getContractAddress } from "../../utils/getContractAddress";
 import { config } from "../../mud/config";
-import mapconfig from "../../../../contracts/abi/MapConfigComponent.json";
+import worldJ from "../../../../contracts/abi/World.json";
+import { useComponentValue } from "@latticexyz/react";
+import { EntityID } from "@latticexyz/recs";
 
 function Menu() {
   const {
@@ -29,7 +31,7 @@ function Menu() {
     saveTerrain,
   } = useTerrain();
 
-  const { components, systems, singletonEntity } = useMUD();
+  const { components, systems, singletonEntity, world } = useMUD();
 
   const handleRefresh = (event: MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
@@ -40,6 +42,11 @@ function Menu() {
     setRefresh(refresh + 1);
   };
 
+  const mapConfigH = useComponentValue(
+    components.MapConfig,
+    singletonEntity
+  )?.value;
+
   const handleTerrain = async () => {
     saveTerrain();
 
@@ -47,18 +54,10 @@ function Menu() {
     const provider = new ethers.providers.JsonRpcProvider(
       config.provider.jsonRpcUrl
     );
-    const mapConfig = new Contract(mapConfigAddress, mapconfig.abi, provider);
-
-    console.log("before");
-    const value1 = await mapConfig.getValue();
-    console.log(value1);
-
+    const mapConfig = new Contract(config.worldAddress, worldJ.abi, provider);
     const data: string = ethers.utils.hexlify(flatten2D(map));
     const tx = await systems["system.Init"].execute(data);
     const tc = await tx.wait();
-
-    const value = await mapConfig.getValue();
-    console.log(value);
   };
 
   const terrainStyles = [8, 7];

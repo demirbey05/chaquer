@@ -9,3 +9,4 @@ libs = ["../../node_modules", "../../../mud"]
 src = "src"
 test = "src/test"
 out = "out"
+fs_permissions = [{ access = "read", path = "./"}]
