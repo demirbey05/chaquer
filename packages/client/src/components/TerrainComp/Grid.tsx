@@ -2,6 +2,10 @@ import { TerrainType } from "../../terrain-helper/types";
 import grassImg from '../../images/grass.png';
 import mountainImg from '../../images/mountain.png';
 import seaImg from '../../images/sea.png';
+import castleImg from '../../images/castle.png';
+import { useTerrain } from "../../context/TerrainContext";
+import '../../styles/globals.css';
+import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
 
 export type DataProp = {
   width: number;
@@ -27,6 +31,24 @@ function bgImg(data:any)
   }
 }
 
+function getDataAtrX(event:any) {
+  const id = event.target.dataset.row;
+  return id;
+}
+
+function getDataAtrY(event:any) {
+  const id = event.target.dataset.column;
+  return id;
+}
+
+function canCastleBeSettle(data: any){
+  if(data !== 1)
+  {
+    return false;
+  }
+  return true;
+}
+
 export function Grid(data: DataProp) {
   const width = data.width;
   const height = data.height;
@@ -34,24 +56,37 @@ export function Grid(data: DataProp) {
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
 
+  const { setCastle, castle, isCastleSettled } = useTerrain(); 
+
   return (
-    <div className={`inline-grid ${data.isBorder && "border-4"} border-black`} >
+    <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`} >
       {rows.map((row) => {
         return columns.map((column) => {
           return (
             <div
               key={`${column},${row}`}
+              data-row={`${row}`}
+              data-column={`${column}`}
               style={{
                 gridColumn: column + 1 ,
                 gridRow: row + 1,
                 width:`${data.pixelStyles[1]}px`,
                 height:`${data.pixelStyles[1]}px`,
-                backgroundImage:bgImg(values[row][column])
+                backgroundImage:`${bgImg(values[row][column])}`
               }}
-            ></div>
+              onClick={(e) => 
+                { canCastleBeSettle(values[row][column]) && !isCastleSettled && 
+                  setCastle({x:getDataAtrX(e),y:getDataAtrY(e)});
+                }}
+              className={`${!data.isBorder && canCastleBeSettle(values[row][column]) && "borderHover"}`}
+              data-bs-toggle={`${canCastleBeSettle(values[row][column]) && !isCastleSettled && !data.isBorder && "modal"}`} 
+              data-bs-target={`${canCastleBeSettle(values[row][column]) && !isCastleSettled && !data.isBorder && "#exampleModal"}`}
+            >
+            </div>
           );
         });
       })}
+      <CastleSettleModal></CastleSettleModal>
     </div>
   );
 }

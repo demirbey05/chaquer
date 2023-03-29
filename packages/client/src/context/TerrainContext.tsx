@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, createContext, FC, ReactNode } from 'react';
+import { useState, useEffect, useContext, createContext, ReactNode } from 'react';
 
 type TerrainContextType = {
   values: any;
@@ -11,6 +11,10 @@ type TerrainContextType = {
   isLoading: boolean;
   setPermArray: (value: any) => void;
   saveTerrain: () => void;
+  handleTileClick: () => void;
+  isCastleSettled: boolean | undefined;
+  setCastle: (value: {x:number, y:number}) => void;
+  castle: {x:any, y:any};
 };
 
 const TerrainContext = createContext<TerrainContextType>({
@@ -24,6 +28,10 @@ const TerrainContext = createContext<TerrainContextType>({
   isLoading: false,
   setPermArray: () => {},
   saveTerrain: () => {},
+  handleTileClick: () => {},
+  isCastleSettled: false,
+  setCastle: () => {},
+  castle: {x:null, y:null}
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { children: ReactNode }) => {
@@ -33,6 +41,8 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { chi
   const [permArray, setPermArray] = useState<any>(null);
   const [refresh, setRefresh] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
+  const [castle, setCastle] = useState<any>();
 
   useEffect(() => {
     saveTerrain();
@@ -50,6 +60,18 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { chi
     window.localStorage.setItem('terrain', JSON.stringify(values));
   };
 
+  const handleTileClick = () => {
+    if(!isCastleSettled)
+    {
+      console.log(castle);
+      setIsCastleSettled(true);
+    }
+    else
+    {
+
+    }
+  }
+
   const results: TerrainContextType = {
     values,
     setIsLoading,
@@ -61,6 +83,10 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { chi
     isLoading,
     setPermArray,
     saveTerrain,
+    handleTileClick,
+    isCastleSettled,
+    setCastle,
+    castle
   };
 
   return (

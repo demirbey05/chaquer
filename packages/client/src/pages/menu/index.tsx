@@ -1,8 +1,8 @@
 import { Grid } from "../../components/TerrainComp/Grid";
 import { generatePerlinValues } from "../../terrain-helper/utils";
 import { MouseEvent } from "react";
-import MySpinner from "../../components/ChakraComp/MySpinner";
-import MyModal from "../../components/ChakraComp/MyModal";
+import MySpinner from "../../components/ChakraComp/TerrainSpinner";
+import MyModal from "../../components/ChakraComp/TerrainInfoModal";
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext.js";
 import map from "../../../map.json";
