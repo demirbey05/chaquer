@@ -52,22 +52,12 @@ export function Grid(data: DataProp) {
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
 
-  const { components, systems } = useMUD();
+  const { isCastleSettled, setTempCastle } = useTerrain();
 
-  const { setCastle, castle, isCastleSettled } = useTerrain();
-
-  const handleClick = async (e: any, row: any, column: any) => {
-    const tx =
-      canCastleBeSettle(values[row][column]) &&
-      !isCastleSettled &&
-      (await systems["system.CastleSettle"].executeTyped(
-        getDataAtrX(e),
-        getDataAtrY(e)
-      ));
-    if (tx) {
-      setCastle({ x: getDataAtrX(e), y: getDataAtrY(e) });
-      const tc = await tx.wait();
-      console.log(tc);
+  const handleClick = async (e: any) => {
+    if(!isCastleSettled)
+    {
+      setTempCastle({x: getDataAtrX(e), y: getDataAtrY(e)});
     }
   };
 
@@ -88,7 +78,7 @@ export function Grid(data: DataProp) {
                 backgroundImage: `${bgImg(values[row][column])}`,
               }}
               onClick={(e) => {
-                handleClick(e, row, column);
+                handleClick(e);
               }}
               className={`${
                 !data.isBorder &&
