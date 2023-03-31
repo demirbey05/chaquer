@@ -1,9 +1,4 @@
-import {
-  defineBoolComponent,
-  defineNumberComponent,
-} from "@latticexyz/std-client";
 import { world } from "./world";
-import { defineComponent, Type } from "@latticexyz/recs";
 import {
   defineStringComponent,
   defineCoordComponent,
