@@ -24,8 +24,6 @@ function Game() {
         getComponentValue(components.Position, entityIndex),
       ]);
     });
-
-    console.log("Castle Entities effect");
   }, [castleEntities]);
 
   const terrainStyles = [0, 25];
