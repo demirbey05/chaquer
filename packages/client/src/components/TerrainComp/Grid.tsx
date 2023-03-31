@@ -2,9 +2,7 @@ import { TerrainType } from "../../terrain-helper/types";
 import grassImg from "../../images/grass.png";
 import mountainImg from "../../images/mountain.png";
 import seaImg from "../../images/sea.png";
-import castleImg from "../../images/castle.png";
 import { useTerrain } from "../../context/TerrainContext";
-import { useMUD } from "../../MUDContext";
 import "../../styles/globals.css";
 import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
 import { useCastlePositions } from "../../hooks/useCastlePositions";
@@ -30,12 +28,12 @@ function bgImg(data: any) {
 
 function getDataAtrX(event: any) {
   const id = event.target.dataset.row;
-  return id;
+  return id.toString();
 }
 
 function getDataAtrY(event: any) {
   const id = event.target.dataset.column;
-  return id;
+  return id.toString();
 }
 
 function canCastleBeSettle(data: any) {
@@ -52,14 +50,23 @@ export function Grid(data: DataProp) {
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
 
-  const { isCastleSettled, setTempCastle } = useTerrain();
+  const { isCastleSettled, setTempCastle, tempCastle, castle } = useTerrain();
+  const castlePositions = useCastlePositions();
+  console.log(castlePositions);
 
-  const handleClick = async (e: any) => {
+  const handleClick = (e: any) => {
     if(!isCastleSettled)
     {
       setTempCastle({x: getDataAtrX(e), y: getDataAtrY(e)});
     }
   };
+
+  useEffect(() => {
+    if(castlePositions)
+    {
+      castlePositions.forEach((data) => document.getElementById(`${data.y}${data.x}`)!.innerHTML = "🏰");
+    }
+  },[castlePositions])
 
   return (
     <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`}>
@@ -68,6 +75,7 @@ export function Grid(data: DataProp) {
           return (
             <div
               key={`${column},${row}`}
+              id={`${column}${row}`}
               data-row={`${row}`}
               data-column={`${column}`}
               style={{
@@ -76,6 +84,9 @@ export function Grid(data: DataProp) {
                 width: `${data.pixelStyles[1]}px`,
                 height: `${data.pixelStyles[1]}px`,
                 backgroundImage: `${bgImg(values[row][column])}`,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
               }}
               onClick={(e) => {
                 handleClick(e);

@@ -30,21 +30,18 @@ function Game() {
           </h2>
         </div>
       )}
-      <SmallMap />
-      <div>
-        <ScrollContainer
-          className="scroll-container"
-          style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}
-        >
-          <Grid
-            width={width}
-            height={height}
-            values={values}
-            pixelStyles={terrainStyles}
-            isBorder={false}
-          />
-        </ScrollContainer>
-      </div>
+      <ScrollContainer
+        className="scroll-container"
+        style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}
+      >
+        <Grid
+          width={width}
+          height={height}
+          values={values}
+          pixelStyles={terrainStyles}
+          isBorder={false}
+        />
+      </ScrollContainer>
     </div>
   );
 }
