@@ -3,28 +3,10 @@ import { useTerrain } from "../../context/TerrainContext";
 import map from "../../../map.json";
 import ScrollContainer from "react-indiana-drag-scroll";
 import SmallMap from "../../components/GameComp/SmallMap";
-import { useMUD } from "../../MUDContext";
-import { useEntityQuery } from "@latticexyz/react";
-import { Has, getComponentValue, ComponentValue } from "@latticexyz/recs";
-import { useEffect, useState } from "react";
 
 function Game() {
   const { width, height, isCastleSettled } = useTerrain();
   const values = map;
-  const { components } = useMUD();
-
-  // Get Castle
-  const castleEntities = useEntityQuery([Has(components.CastleOwnable)]);
-  const [castlePositions, setCastlePositions] = useState<any[]>([]);
-
-  useEffect(() => {
-    castleEntities.forEach((entityIndex) => {
-      setCastlePositions([
-        ...castlePositions,
-        getComponentValue(components.Position, entityIndex),
-      ]);
-    });
-  }, [castleEntities]);
 
   const terrainStyles = [0, 25];
 

@@ -7,6 +7,8 @@ import { useTerrain } from "../../context/TerrainContext";
 import { useMUD } from "../../MUDContext";
 import "../../styles/globals.css";
 import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
+import { useCastlePositions } from "../../hooks/useCastlePositions";
+import { useEffect } from "react";
 
 export type DataProp = {
   width: number;
