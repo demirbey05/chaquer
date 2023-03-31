@@ -16,7 +16,6 @@ import { getContractAddress } from "../../utils/getContractAddress";
 import { config } from "../../mud/config";
 import worldJ from "../../../../contracts/abi/World.json";
 import { useComponentValue } from "@latticexyz/react";
-import { EntityID } from "@latticexyz/recs";
 
 function Menu() {
   const {

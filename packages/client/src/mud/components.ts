@@ -1,4 +1,5 @@
 import { world } from "./world";
+import { overridableComponent } from "@latticexyz/recs";
 import {
   defineStringComponent,
   defineCoordComponent,
@@ -13,12 +14,14 @@ export const contractComponents = {
     id: "MapConfig",
     metadata: { contractId: "component.MapConfig" },
   }),
-  Position: defineCoordComponent(world, {
-    id: "Position",
-    metadata: {
-      contractId: "component.Position",
-    },
-  }),
+  Position: overridableComponent(
+    defineCoordComponent(world, {
+      id: "Position",
+      metadata: {
+        contractId: "component.Position",
+      },
+    })
+  ),
 };
 
 export const clientComponents = {};
