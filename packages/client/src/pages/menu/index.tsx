@@ -134,7 +134,7 @@ function Menu() {
                 onClick={handleRefresh}
                 p="7"
               >
-                {refresh === 0 ? "Generate Terrain" : "Regenerate the Terrain"}
+                {refresh === 0 ? "Enter the Game" : "Regenerate the Terrain"}
               </Button>
             </div>
             {refresh !== 0 && (

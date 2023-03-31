@@ -1,7 +1,23 @@
 import { useTerrain } from "../../context/TerrainContext";
+import { useMUD } from "../../MUDContext";
 
 function CastleSettleModal() {
-    const { handleTileClick } = useTerrain(); 
+    const { handleTileClick, isCastleSettled, tempCastle, setCastle } = useTerrain(); 
+    const { components, systems } = useMUD();
+
+    const handleClick = async () => {
+        const tx =
+          !isCastleSettled &&
+          (await systems["system.CastleSettle"].executeTyped(
+            tempCastle.x,
+            tempCastle.y
+          ));
+        if (tx) {
+          setCastle({ x: tempCastle.x, y: tempCastle.y });
+          const tc = await tx.wait();
+          console.log(tc);
+        }
+      };
     
     return (
         <>
@@ -17,9 +33,11 @@ function CastleSettleModal() {
             </div>
             <div className="modal-footer">
                 <button type="button" className="btn btn-secondary bg-dark" data-bs-dismiss="modal">No</button>
-                <button onClick={() => {
-                handleTileClick();
-                }} type="button" className="btn btn-primary bg-dark" data-bs-dismiss="modal">Yes</button>
+                <button onClick={ () => {
+                    handleClick();
+                    handleTileClick();
+                }} 
+                type="button" className="btn btn-primary bg-dark" data-bs-dismiss="modal">Yes</button>
             </div>
             </div>
         </div>
