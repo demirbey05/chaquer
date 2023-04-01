@@ -6,18 +6,19 @@ import { useState, useEffect } from "react";
 export function useCastlePositions() {
   const { components } = useMUD();
 
-  // Get Castle
+  // Get Castle entities
   const castleEntities = useEntityQuery([Has(components.CastleOwnable)]);
-  const [castlePositions, setCastlePositions] = useState<any[]>([]);
+  console.log(castleEntities);
 
+  // Transform castle positions and store in separate state
+  const [castlePositions, setCastlePositions] = useState<any[]>([]);
   useEffect(() => {
-    castleEntities.forEach((entityIndex) => {
-      setCastlePositions([
-        ...castlePositions,
-        getComponentValue(components.Position, entityIndex),
-      ]);
-    });
+    const positions = castleEntities.map((entityIndex) =>
+      getComponentValue(components.Position, entityIndex)
+    );
+    setCastlePositions(positions);
   }, [castleEntities]);
 
+  // Return transformed castle positions
   return castlePositions;
 }

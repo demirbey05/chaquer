@@ -16,12 +16,12 @@ const root = ReactDOM.createRoot(rootElement);
 setup().then((result) => {
   root.render(
     <MUDProvider {...result}>
-      <TerrainProvider> 
+      <TerrainProvider>
         <ChakraProvider>
-            <App />
+          <App />
         </ChakraProvider>
       </TerrainProvider>
-      {import.meta.env.DEV ? <ComponentBrowser /> : null}
+      <ComponentBrowser />
     </MUDProvider>
   );
 });

@@ -55,18 +55,19 @@ export function Grid(data: DataProp) {
   console.log(castlePositions);
 
   const handleClick = (e: any) => {
-    if(!isCastleSettled)
-    {
-      setTempCastle({x: getDataAtrX(e), y: getDataAtrY(e)});
+    if (!isCastleSettled) {
+      setTempCastle({ x: getDataAtrX(e), y: getDataAtrY(e) });
     }
   };
 
   useEffect(() => {
-    if(castlePositions)
-    {
-      castlePositions.forEach((data) => document.getElementById(`${data.y}${data.x}`)!.innerHTML = "🏰");
+    if (castlePositions) {
+      castlePositions.forEach(
+        (data) =>
+          (document.getElementById(`${data.y}${data.x}`)!.innerHTML = "🏰")
+      );
     }
-  },[castlePositions])
+  }, [castlePositions]);
 
   return (
     <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`}>
@@ -86,7 +87,7 @@ export function Grid(data: DataProp) {
                 backgroundImage: `${bgImg(values[row][column])}`,
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
               onClick={(e) => {
                 handleClick(e);
