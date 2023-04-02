@@ -92,7 +92,7 @@ function Menu() {
             </>
           )}
           <div className="col align-items-center justify-content-center">
-            <h2 className="text-center text-white mb-2 display-4 border-top border-bottom font-bold">
+            <h2 className="text-center text-white mb-5 display-4 border-top border-bottom font-bold">
               Chaquer
             </h2>
             <img

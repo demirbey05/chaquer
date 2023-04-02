@@ -2,6 +2,7 @@ import { TerrainType } from "../../terrain-helper/types";
 import grassImg from "../../images/grass.png";
 import mountainImg from "../../images/mountain.png";
 import seaImg from "../../images/sea.png";
+import castleImg from '../../images/castle.png';
 import { useTerrain } from "../../context/TerrainContext";
 import "../../styles/globals.css";
 import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
@@ -62,7 +63,7 @@ export function Grid(data: DataProp) {
 
   useEffect(() => {
     if (castlePositions) {
-      castlePositions.forEach(
+      castlePositions.map(
         (data) =>
           (document.getElementById(`${data.y}${data.x}`)!.innerHTML = "🏰")
       );
@@ -88,6 +89,7 @@ export function Grid(data: DataProp) {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                fontSize:`${data.isBorder && "3.5px"}`
               }}
               onClick={(e) => {
                 handleClick(e);
