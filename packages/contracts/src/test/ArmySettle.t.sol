@@ -39,6 +39,22 @@ contract ArmySettleTest is MudTest {
     initSystem.execute(mapData);
   }
 
+  // Auxiliary Functions
+
+  function settleAnArmyAroundCoords(
+    uint32 coord_x,
+    uint32 coord_y
+  ) public returns (uint256 armyOne, uint256 armyTwo, uint256 armyThree) {
+    settleSystem.executeTyped(coord_x, coord_y);
+    armySettle.execute(abi.encode(coord_x - 1, coord_y, 33, 33, 34));
+    armySettle.execute(abi.encode(coord_x + 1, coord_y, 33, 33, 34));
+    armySettle.execute(abi.encode(coord_x, coord_y - 1, 33, 33, 34));
+
+    armyOne = uint256(keccak256(abi.encodePacked(coord_x - 1, coord_y, "Army", alice)));
+    armyTwo = uint256(keccak256(abi.encodePacked(coord_x + 1, coord_y, "Army", alice)));
+    armyThree = uint256(keccak256(abi.encodePacked(coord_x, coord_y - 1, "Army", alice)));
+  }
+
   function testCoordinatesOutOfBound() public {
     settleSystem.executeTyped(3, 4);
     vm.expectRevert(CoordinatesOutOfBound.selector);
@@ -67,10 +83,7 @@ contract ArmySettleTest is MudTest {
   }
 
   function testNoArmyRight() public {
-    settleSystem.executeTyped(15, 12);
-    armySettle.execute(abi.encode(15, 13, 33, 33, 34));
-    armySettle.execute(abi.encode(15, 11, 33, 33, 34));
-    armySettle.execute(abi.encode(14, 12, 33, 33, 34));
+    settleAnArmyAroundCoords(15, 12);
     vm.expectRevert(NoArmyRight.selector);
     armySettle.execute(abi.encode(13, 12, 33, 33, 34));
   }
@@ -91,5 +104,16 @@ contract ArmySettleTest is MudTest {
     settleSystem.executeTyped(30, 41);
     vm.expectRevert(TileIsNotEmpty.selector);
     armySettle.execute(abi.encode(30, 41, 33, 33, 34));
+  }
+
+  function testSuccessfulDeployment() public {
+    vm.startPrank(alice);
+    (uint256 armyOne, uint256 armyTwo, uint256 armyThree) = settleAnArmyAroundCoords(30, 42);
+
+    vm.stopPrank();
+
+    assertEq(armyOwnable.getValue(armyOne), alice);
+    assertEq(armyOwnable.getValue(armyTwo), alice);
+    assertEq(armyOwnable.getValue(armyThree), alice);
   }
 }
