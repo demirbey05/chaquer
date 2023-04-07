@@ -126,7 +126,6 @@ export class IntervalProcessor {
     let indexSorted = sortedNumberOfUsers.map((element) => {
       return numberOfUsers.indexOf(element);
     });
-    console.log(indexSorted);
 
     indexSorted.forEach((value, index) => {
       this.intervals[value].class = TerrainPrecedence[index];

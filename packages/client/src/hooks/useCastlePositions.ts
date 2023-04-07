@@ -8,7 +8,6 @@ export function useCastlePositions() {
 
   // Get Castle entities
   const castleEntities = useEntityQuery([Has(components.CastleOwnable)]);
-  console.log(castleEntities);
 
   // Transform castle positions and store in separate state
   const [castlePositions, setCastlePositions] = useState<any[]>([]);

@@ -19,6 +19,7 @@ type TerrainContextType = {
   saveTerrain: () => void;
   handleTileClick: () => void;
   isCastleSettled: boolean | undefined;
+  setIsCastleSettled: (value: boolean) => void;
   setCastle: (value: { x: number; y: number }) => void;
   castle: { x: any; y: any };
   setTempCastle: (value: {x: number; y:number}) => void;
@@ -38,6 +39,7 @@ const TerrainContext = createContext<TerrainContextType>({
   saveTerrain: () => {},
   handleTileClick: () => {},
   isCastleSettled: false,
+  setIsCastleSettled: () => {},
   setCastle: () => {},
   castle: { x: null, y: null },
   setTempCastle: () => {},
@@ -99,7 +101,8 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     setCastle,
     castle,
     setTempCastle,
-    tempCastle
+    tempCastle,
+    setIsCastleSettled
   };
 
   return (
