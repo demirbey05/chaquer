@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
-import { Uint32Component } from "std-contracts/components/Uint32Component.sol";
+import { Coord } from "components/PositionComponent.sol";
 
 library LibMath {
-  function increment(Uint32Component component, uint256 entity) internal {
-    uint32 current = component.has(entity) ? component.getValue(entity) : 0;
-    component.set(entity, current + 1);
+  function manhattan(Coord memory a, Coord memory b) internal pure returns (uint32) {
+    uint32 dx = a.x > b.x ? a.x - b.x : b.x - a.x;
+    uint32 dy = a.y > b.y ? a.y - b.y : b.y - a.y;
+    return dx + dy;
   }
 }

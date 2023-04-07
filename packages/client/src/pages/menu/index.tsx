@@ -14,7 +14,6 @@ import { flatten2D } from "../../utils/terrainArray";
 import { ethers, Contract } from "ethers";
 import { getContractAddress } from "../../utils/getContractAddress";
 import { config } from "../../mud/config";
-import worldJ from "../../../../contracts/abi/World.json";
 import { useComponentValue } from "@latticexyz/react";
 
 function Menu() {
@@ -48,12 +47,6 @@ function Menu() {
 
   const handleTerrain = async () => {
     saveTerrain();
-
-    const mapConfigAddress = getContractAddress("MapConfigComponent");
-    const provider = new ethers.providers.JsonRpcProvider(
-      config.provider.jsonRpcUrl
-    );
-    const mapConfig = new Contract(config.worldAddress, worldJ.abi, provider);
     const data: string = ethers.utils.hexlify(flatten2D(map));
     const tx = await systems["system.Init"].execute(data);
     const tc = await tx.wait();
