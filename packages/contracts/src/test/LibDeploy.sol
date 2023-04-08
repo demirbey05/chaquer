@@ -19,10 +19,13 @@ import { SystemStorage } from "solecs/SystemStorage.sol";
 import { MapConfigComponent, ID as MapConfigComponentID } from "components/MapConfigComponent.sol";
 import { CastleOwnableComponent, ID as CastleOwnableComponentID } from "components/CastleOwnableComponent.sol";
 import { PositionComponent, ID as PositionComponentID } from "components/PositionComponent.sol";
+import { ArmyConfigComponent, ID as ArmyConfigComponentID } from "components/ArmyConfigComponent.sol";
+import { ArmyOwnableComponent, ID as ArmyOwnableComponentID } from "components/ArmyOwnableComponent.sol";
 
 // Systems (requires 'systems=...' remapping in project's remappings.txt)
 import { InitSystem, ID as InitSystemID } from "systems/InitSystem.sol";
 import { CastleSettleSystem, ID as CastleSettleSystemID } from "systems/CastleSettleSystem.sol";
+import { ArmySettleSystem, ID as ArmySettleSystemID } from "systems/ArmySettleSystem.sol";
 
 
 struct DeployResult {
@@ -60,6 +63,14 @@ library LibDeploy {
 
       console.log("Deploying PositionComponent");
       comp = new PositionComponent(address(result.world));
+      console.log(address(comp));
+
+      console.log("Deploying ArmyConfigComponent");
+      comp = new ArmyConfigComponent(address(result.world));
+      console.log(address(comp));
+
+      console.log("Deploying ArmyOwnableComponent");
+      comp = new ArmyOwnableComponent(address(result.world));
       console.log(address(comp));
     } 
     
@@ -106,6 +117,14 @@ library LibDeploy {
     world.registerSystem(address(system), CastleSettleSystemID);
     authorizeWriter(components, CastleOwnableComponentID, address(system));
     authorizeWriter(components, PositionComponentID, address(system));
+    console.log(address(system));
+
+    console.log("Deploying ArmySettleSystem");
+    system = new ArmySettleSystem(world, address(components));
+    world.registerSystem(address(system), ArmySettleSystemID);
+    authorizeWriter(components, PositionComponentID, address(system));
+    authorizeWriter(components, ArmyConfigComponentID, address(system));
+    authorizeWriter(components, ArmyOwnableComponentID, address(system));
     console.log(address(system));
   }
 }

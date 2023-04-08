@@ -1,4 +1,10 @@
-import { useState, useEffect, useContext, createContext, ReactNode } from 'react';
+import {
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+  ReactNode,
+} from "react";
 
 type TerrainContextType = {
   values: any;
@@ -13,8 +19,11 @@ type TerrainContextType = {
   saveTerrain: () => void;
   handleTileClick: () => void;
   isCastleSettled: boolean | undefined;
-  setCastle: (value: {x:number, y:number}) => void;
-  castle: {x:any, y:any};
+  setIsCastleSettled: (value: boolean) => void;
+  setCastle: (value: { x: number; y: number }) => void;
+  castle: { x: any; y: any };
+  setTempCastle: (value: {x: number; y:number}) => void;
+  tempCastle: { x: any, y: any };
 };
 
 const TerrainContext = createContext<TerrainContextType>({
@@ -30,11 +39,18 @@ const TerrainContext = createContext<TerrainContextType>({
   saveTerrain: () => {},
   handleTileClick: () => {},
   isCastleSettled: false,
+  setIsCastleSettled: () => {},
   setCastle: () => {},
-  castle: {x:null, y:null}
+  castle: { x: null, y: null },
+  setTempCastle: () => {},
+  tempCastle: { x: null, y: null}
 });
 
-const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { children: ReactNode }) => {
+const TerrainProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const width = 100;
   const height = 100;
   const [values, setValues] = useState<any>(null);
@@ -43,6 +59,7 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { chi
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
   const [castle, setCastle] = useState<any>();
+  const [tempCastle, setTempCastle] = useState<any>();
 
   useEffect(() => {
     saveTerrain();
@@ -50,27 +67,23 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { chi
   }, [values]);
 
   useEffect(() => {
-    const terrain = window.localStorage.getItem('terrain');
+    const terrain = window.localStorage.getItem("terrain");
     if (terrain) {
-        setValues(JSON.parse(terrain));
+      setValues(JSON.parse(terrain));
     }
   }, []);
 
   const saveTerrain = () => {
-    window.localStorage.setItem('terrain', JSON.stringify(values));
+    window.localStorage.setItem("terrain", JSON.stringify(values));
   };
 
   const handleTileClick = () => {
-    if(!isCastleSettled)
-    {
+    if (!isCastleSettled) {
       console.log(castle);
       setIsCastleSettled(true);
+    } else {
     }
-    else
-    {
-
-    }
-  }
+  };
 
   const results: TerrainContextType = {
     values,
@@ -86,7 +99,10 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({ children } : { chi
     handleTileClick,
     isCastleSettled,
     setCastle,
-    castle
+    castle,
+    setTempCastle,
+    tempCastle,
+    setIsCastleSettled
   };
 
   return (
