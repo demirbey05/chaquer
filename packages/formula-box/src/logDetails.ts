@@ -19,7 +19,9 @@ export const logDetails = (
     console.log("Army Two is won");
   }
 
-  console.log(`Army One Score is ${armyOneScore} ${armyTwoScore}`);
+  console.log(
+    `Army One Score is ${armyOneScore}, Army Two Score is ${armyTwoScore}`
+  );
 
   console.log("");
 };
