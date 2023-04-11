@@ -1,4 +1,6 @@
 import { Army } from "./types";
+import { findRemainings } from "./utils";
+import { calculateScoreOne, calculateScoreTwo } from "./utils";
 
 const functionOne = (armyOne: Army, armyTwo: Army): number => {
   const swordsManScore =
@@ -44,4 +46,26 @@ const functionTwo = (armyOne: Army, armyTwo: Army): number => {
   return swordsManScore + archerScore + cavalryScore;
 };
 
-export const functions = [functionOne, functionTwo];
+const functionThree = (armyOne: Army, armyTwo: Army): number => {
+  const firstDiff = { swordsman: 0, archer: 0, cavalry: 0 };
+  firstDiff.swordsman = armyOne.numSwordsman - armyTwo.numSwordsman;
+  firstDiff.archer = armyOne.numArcher - armyTwo.numArcher;
+  firstDiff.cavalry = armyOne.numCavalry - armyTwo.numCavalry;
+
+  const remainings = findRemainings(firstDiff);
+
+  let result = 0;
+
+  if (remainings.length === 1) {
+    result = calculateScoreOne(firstDiff, remainings[0]);
+  } else if (remainings.length === 2) {
+    result = calculateScoreTwo(firstDiff, remainings[0], remainings[1]);
+  } else if (remainings.length === 3) {
+    return 100;
+  } else {
+    return -15000;
+  }
+
+  return result;
+};
+export const functions = [functionOne, functionTwo, functionThree];

@@ -15,8 +15,10 @@ export const logDetails = (
   );
   if (armyOneScore > armyTwoScore) {
     console.log("Army One is won");
-  } else {
+  } else if (armyOneScore < armyTwoScore) {
     console.log("Army Two is won");
+  } else {
+    console.log("Tie");
   }
 
   console.log(
@@ -25,3 +27,9 @@ export const logDetails = (
 
   console.log("");
 };
+
+//A1
+
+//-67 swords
+// 64 arch
+// -6 cav

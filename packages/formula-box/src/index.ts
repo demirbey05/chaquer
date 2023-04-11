@@ -1,5 +1,6 @@
 import { functions } from "./functions";
 import { simulation } from "./simulation";
+import { logDetails } from "./logDetails";
 import { argv } from "process";
 
 const main = () => {
@@ -11,4 +12,5 @@ const main = () => {
 
   simulation(100, functions[argument], 100);
 };
+
 main();
