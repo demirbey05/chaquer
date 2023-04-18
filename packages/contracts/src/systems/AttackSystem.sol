@@ -19,7 +19,10 @@ error NoArmy();
 contract AttackSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
 
-  function execute(bytes memory args) public returns (bytes memory) {}
+  function execute(bytes memory args) public returns (bytes memory) {
+    (uint256 armyOneID, uint256 armyTwoID) = abi.decode(args, (uint256, uint256));
+    return executeTyped(armyOneID, armyTwoID);
+  }
 
   function executeTyped(uint256 armyOneID, uint256 armyTwoID) public returns (bytes memory) {
     ArmyOwnableComponent armyOwnable = ArmyOwnableComponent(getAddressById(components, ArmyOwnableComponentID));
@@ -44,11 +47,30 @@ contract AttackSystem is System {
     BattleScore memory battleScore = LibAttack.calculateBattleScores(armyOne, armyTwo);
 
     if (battleScore.scoreArmyOne > battleScore.scoreArmyTwo) {
-      // Army One wins
+      armyConfig.remove(armyTwoID);
+      armyOwnable.remove(armyTwoID);
+
+      ArmyConfig memory newConfig = ArmyConfig(
+        armyOne.numSwordsman >> 1,
+        armyOne.numArcher >> 1,
+        armyOne.numCavalry >> 1
+      );
+      armyConfig.set(armyOneID, newConfig);
+
+      return new bytes(1);
     } else if (battleScore.scoreArmyOne < battleScore.scoreArmyTwo) {
-      // Army Two wins
-    } else if (battleScore.scoreArmyOne == battleScore.scoreArmyTwo) {
-      // Tie
+      armyConfig.remove(armyOneID);
+      armyOwnable.remove(armyOneID);
+
+      ArmyConfig memory newConfig = ArmyConfig(
+        armyTwo.numSwordsman >> 1,
+        armyTwo.numArcher >> 1,
+        armyTwo.numCavalry >> 1
+      );
+      armyConfig.set(armyTwoID, newConfig);
+      return new bytes(2);
+    } else {
+      return new bytes(0);
     }
   }
 }
