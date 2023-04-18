@@ -60,7 +60,7 @@ contract ArmySettleSystem is System {
     if (distanceBetween > 3) {
       revert TooFarToSettle();
     }
-    if (armyConfiguration.numArcher + armyConfiguration.numCavalry + armyConfiguration.numSwordsman != 100) {
+    if (armyConfiguration.numArcher + armyConfiguration.numCavalry + armyConfiguration.numSwordsman > 100) {
       revert TooManySoldier();
     }
 

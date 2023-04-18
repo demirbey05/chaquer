@@ -57,7 +57,7 @@ contract AttackSystem is System {
       );
       armyConfig.set(armyOneID, newConfig);
 
-      return new bytes(1);
+      return abi.encode(1, battleScore.scoreArmyOne);
     } else if (battleScore.scoreArmyOne < battleScore.scoreArmyTwo) {
       armyConfig.remove(armyOneID);
       armyOwnable.remove(armyOneID);
@@ -68,9 +68,9 @@ contract AttackSystem is System {
         armyTwo.numCavalry >> 1
       );
       armyConfig.set(armyTwoID, newConfig);
-      return new bytes(2);
+      return abi.encode(2, battleScore.scoreArmyTwo);
     } else {
-      return new bytes(0);
+      return abi.encode(0, battleScore.scoreArmyOne);
     }
   }
 }

@@ -12,6 +12,8 @@
     {
       "name": "ArmySettleSystem",
       "writeAccess": ["PositionComponent", "ArmyConfigComponent", "ArmyOwnableComponent"]
-    }
+    },
+    { "name": "MoveArmySystem", "writeAccess": ["PositionComponent"] },
+    { "name": "AttackSystem", "writeAccess": ["ArmyConfigComponent", "ArmyOwnableComponent"] }
   ]
 }

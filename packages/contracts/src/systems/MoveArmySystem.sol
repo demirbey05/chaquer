@@ -12,6 +12,7 @@ uint256 constant ID = uint256(keccak256("system.MoveArmy"));
 
 error NoAuthorized();
 error TooFar();
+error TileIsNotEmpty();
 
 contract MoveArmySystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -30,6 +31,9 @@ contract MoveArmySystem is System {
     }
     if (LibMath.manhattan(target, position.getValue(armyOneID)) >= 3) {
       revert TooFar();
+    }
+    if (position.getEntitiesWithValue(target).length != 0) {
+      revert TileIsNotEmpty();
     }
 
     position.set(armyOneID, target);

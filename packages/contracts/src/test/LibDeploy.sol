@@ -26,6 +26,8 @@ import { ArmyOwnableComponent, ID as ArmyOwnableComponentID } from "components/A
 import { InitSystem, ID as InitSystemID } from "systems/InitSystem.sol";
 import { CastleSettleSystem, ID as CastleSettleSystemID } from "systems/CastleSettleSystem.sol";
 import { ArmySettleSystem, ID as ArmySettleSystemID } from "systems/ArmySettleSystem.sol";
+import { MoveArmySystem, ID as MoveArmySystemID } from "systems/MoveArmySystem.sol";
+import { AttackSystem, ID as AttackSystemID } from "systems/AttackSystem.sol";
 
 
 struct DeployResult {
@@ -123,6 +125,19 @@ library LibDeploy {
     system = new ArmySettleSystem(world, address(components));
     world.registerSystem(address(system), ArmySettleSystemID);
     authorizeWriter(components, PositionComponentID, address(system));
+    authorizeWriter(components, ArmyConfigComponentID, address(system));
+    authorizeWriter(components, ArmyOwnableComponentID, address(system));
+    console.log(address(system));
+
+    console.log("Deploying MoveArmySystem");
+    system = new MoveArmySystem(world, address(components));
+    world.registerSystem(address(system), MoveArmySystemID);
+    authorizeWriter(components, PositionComponentID, address(system));
+    console.log(address(system));
+
+    console.log("Deploying AttackSystem");
+    system = new AttackSystem(world, address(components));
+    world.registerSystem(address(system), AttackSystemID);
     authorizeWriter(components, ArmyConfigComponentID, address(system));
     authorizeWriter(components, ArmyOwnableComponentID, address(system));
     console.log(address(system));
