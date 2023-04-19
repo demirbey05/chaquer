@@ -14,13 +14,13 @@ import { LibMath } from "libraries/LibMath.sol";
 
 uint256 constant ID = uint256(keccak256("system.ArmySettle"));
 
-error CoordinatesOutOfBound();
-error TileIsNotEmpty();
-error NoArmyRight();
-error NoCastle();
-error TooFarToSettle();
-error TooManySoldier();
-error WrongTerrainType();
+error ArmySettle__CoordinatesOutOfBound();
+error ArmySettle__TileIsNotEmpty();
+error ArmySettle__NoArmyRight();
+error ArmySettle__NoCastle();
+error ArmySettle__TooFarToSettle();
+error ArmySettle__TooManySoldier();
+error ArmySettle__WrongTerrainType();
 
 contract ArmySettleSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -36,21 +36,21 @@ contract ArmySettleSystem is System {
 
     // Coordinates is out of bound
     if (!(coord.x < 100 && coord.y < 100 && coord.x >= 0 && coord.y >= 0)) {
-      revert CoordinatesOutOfBound();
+      revert ArmySettle__CoordinatesOutOfBound();
     }
     if (terrainComponent.getTerrain(coord.y * 100 + coord.x) != hex"01") {
-      revert WrongTerrainType();
+      revert ArmySettle__WrongTerrainType();
     }
     // If there is an another entity at that coordinate
     if (positionComponent.getEntitiesWithValue(abi.encode(coord)).length != 0) {
-      revert TileIsNotEmpty();
+      revert ArmySettle__TileIsNotEmpty();
     }
     // You can have three army
     if (armyOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length >= 3) {
-      revert NoArmyRight();
+      revert ArmySettle__NoArmyRight();
     }
     if (castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length != 1) {
-      revert NoCastle();
+      revert ArmySettle__NoCastle();
     }
     Coord memory castlePosition = positionComponent.getValue(
       castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate))[0]
@@ -58,10 +58,10 @@ contract ArmySettleSystem is System {
     uint32 distanceBetween = LibMath.manhattan(castlePosition, coord);
 
     if (distanceBetween > 3) {
-      revert TooFarToSettle();
+      revert ArmySettle__TooFarToSettle();
     }
     if (armyConfiguration.numArcher + armyConfiguration.numCavalry + armyConfiguration.numSwordsman > 100) {
-      revert TooManySoldier();
+      revert ArmySettle__TooManySoldier();
     }
 
     uint256 entityID = uint256(keccak256(abi.encodePacked(coord.x, coord.y, "Army", ownerCandidate)));

@@ -3,6 +3,8 @@ pragma solidity ^0.8.0;
 import { ArmyConfig } from "components/ArmyConfigComponent.sol";
 import { BattleResult, BattleScore, RemainingData } from "./Types.sol";
 import { findRemainings, calculateScoreSingleRemaining, makeInverseResult, makeInverseRemaining, calculateScoreDoubleRemaining } from "./utils.sol";
+import { ArmyConfigComponent } from "components/ArmyConfigComponent.sol";
+import { ArmyOwnableComponent } from "components/ArmyOwnableComponent.sol";
 error ErrorInCalculatingBattleScores();
 
 library LibAttack {
@@ -61,6 +63,45 @@ library LibAttack {
       console.logInt(result.scoreArmyTwo);*/
     } else {
       revert ErrorInCalculatingBattleScores();
+    }
+  }
+
+  function warBetweenArmies(
+    uint256 armyOneID,
+    uint256 armyTwoID,
+    ArmyConfigComponent armyConfig,
+    ArmyOwnableComponent armyOwnable
+  ) internal returns (bytes memory) {
+    ArmyConfig memory armyOne = armyConfig.getValue(armyOneID);
+    ArmyConfig memory armyTwo = armyConfig.getValue(armyTwoID);
+
+    BattleScore memory battleScore = LibAttack.calculateBattleScores(armyOne, armyTwo);
+
+    if (battleScore.scoreArmyOne > battleScore.scoreArmyTwo) {
+      armyConfig.remove(armyTwoID);
+      armyOwnable.remove(armyTwoID);
+
+      ArmyConfig memory newConfig = ArmyConfig(
+        armyOne.numSwordsman >> 1,
+        armyOne.numArcher >> 1,
+        armyOne.numCavalry >> 1
+      );
+      armyConfig.set(armyOneID, newConfig);
+
+      return abi.encode(1, battleScore.scoreArmyOne);
+    } else if (battleScore.scoreArmyOne < battleScore.scoreArmyTwo) {
+      armyConfig.remove(armyOneID);
+      armyOwnable.remove(armyOneID);
+
+      ArmyConfig memory newConfig = ArmyConfig(
+        armyTwo.numSwordsman >> 1,
+        armyTwo.numArcher >> 1,
+        armyTwo.numCavalry >> 1
+      );
+      armyConfig.set(armyTwoID, newConfig);
+      return abi.encode(2, battleScore.scoreArmyTwo);
+    } else {
+      return abi.encode(0, battleScore.scoreArmyOne);
     }
   }
 }

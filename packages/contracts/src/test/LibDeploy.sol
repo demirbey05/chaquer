@@ -28,6 +28,7 @@ import { CastleSettleSystem, ID as CastleSettleSystemID } from "systems/CastleSe
 import { ArmySettleSystem, ID as ArmySettleSystemID } from "systems/ArmySettleSystem.sol";
 import { MoveArmySystem, ID as MoveArmySystemID } from "systems/MoveArmySystem.sol";
 import { AttackSystem, ID as AttackSystemID } from "systems/AttackSystem.sol";
+import { CaptureSystem, ID as CaptureSystemID } from "systems/CaptureSystem.sol";
 
 
 struct DeployResult {
@@ -140,6 +141,14 @@ library LibDeploy {
     world.registerSystem(address(system), AttackSystemID);
     authorizeWriter(components, ArmyConfigComponentID, address(system));
     authorizeWriter(components, ArmyOwnableComponentID, address(system));
+    console.log(address(system));
+
+    console.log("Deploying CaptureSystem");
+    system = new CaptureSystem(world, address(components));
+    world.registerSystem(address(system), CaptureSystemID);
+    authorizeWriter(components, ArmyConfigComponentID, address(system));
+    authorizeWriter(components, ArmyOwnableComponentID, address(system));
+    authorizeWriter(components, CastleOwnableComponentID, address(system));
     console.log(address(system));
   }
 }

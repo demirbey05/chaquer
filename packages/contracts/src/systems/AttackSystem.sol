@@ -12,9 +12,9 @@ import { LibAttack } from "libraries/LibAttack.sol";
 import { BattleScore } from "libraries/Types.sol";
 uint256 constant ID = uint256(keccak256("system.Attack"));
 
-error ArmyNotBelongYou();
-error TooAwayToAttack();
-error NoArmy();
+error AttackSystem__ArmyNotBelongYou();
+error AttackSystem__TooAwayToAttack();
+error AttackSystem__NoArmy();
 
 contract AttackSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -30,15 +30,15 @@ contract AttackSystem is System {
     PositionComponent position = PositionComponent(getAddressById(components, PositionComponentID));
 
     if (armyOwnable.getValue(armyOneID) != msg.sender) {
-      revert ArmyNotBelongYou();
+      revert AttackSystem__ArmyNotBelongYou();
     }
     if (!armyOwnable.has(armyTwoID)) {
-      revert NoArmy();
+      revert AttackSystem__NoArmy();
     }
     uint32 distanceBetween = LibMath.manhattan(position.getValue(armyOneID), position.getValue(armyTwoID));
 
     if (!(distanceBetween < 3)) {
-      revert TooAwayToAttack();
+      revert AttackSystem__TooAwayToAttack();
     }
 
     ArmyConfig memory armyOne = armyConfig.getValue(armyOneID);

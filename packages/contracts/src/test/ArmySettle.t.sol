@@ -9,7 +9,7 @@ import { InitSystem, ID as InitSystemID } from "systems/InitSystem.sol";
 import { ArmyConfigComponent, ID as ArmyConfigComponentID } from "components/ArmyConfigComponent.sol";
 import { PositionComponent, ID as PositionComponentID } from "components/PositionComponent.sol";
 import { InitSystem, ID as InitSystemID } from "systems/InitSystem.sol";
-import { ArmySettleSystem, ID as ArmySettleSystemID, CoordinatesOutOfBound, NoCastle, WrongTerrainType, TileIsNotEmpty, NoArmyRight, TooFarToSettle, TooManySoldier } from "systems/ArmySettleSystem.sol";
+import { ArmySettleSystem, ID as ArmySettleSystemID, ArmySettle__CoordinatesOutOfBound, ArmySettle__NoCastle, ArmySettle__WrongTerrainType, ArmySettle__TileIsNotEmpty, ArmySettle__NoArmyRight, ArmySettle__TooFarToSettle, ArmySettle__TooManySoldier } from "systems/ArmySettleSystem.sol";
 import { ArmyOwnableComponent, ID as ArmyOwnableComponentID } from "components/ArmyOwnableComponent.sol";
 
 contract ArmySettleTest is MudTest {
@@ -57,17 +57,17 @@ contract ArmySettleTest is MudTest {
 
   function testCoordinatesOutOfBound() public {
     settleSystem.executeTyped(3, 4);
-    vm.expectRevert(CoordinatesOutOfBound.selector);
+    vm.expectRevert(ArmySettle__CoordinatesOutOfBound.selector);
     armySettle.execute(abi.encode(300, 400, 33, 33, 34));
   }
 
   function testCannotDeployWithoutCastle() public {
-    vm.expectRevert(NoCastle.selector);
+    vm.expectRevert(ArmySettle__NoCastle.selector);
     armySettle.execute(abi.encode(15, 13, 33, 33, 34));
   }
 
   function testWrongTerrainType() public {
-    vm.expectRevert(WrongTerrainType.selector);
+    vm.expectRevert(ArmySettle__WrongTerrainType.selector);
     armySettle.execute(abi.encode(99, 99, 33, 33, 34));
   }
 
@@ -77,32 +77,32 @@ contract ArmySettleTest is MudTest {
 
     vm.startPrank(alice);
     settleSystem.executeTyped(15, 14);
-    vm.expectRevert(TileIsNotEmpty.selector);
+    vm.expectRevert(ArmySettle__TileIsNotEmpty.selector);
     armySettle.execute(abi.encode(15, 13, 33, 33, 34));
     vm.stopPrank();
   }
 
   function testNoArmyRight() public {
     settleAnArmyAroundCoords(15, 12);
-    vm.expectRevert(NoArmyRight.selector);
+    vm.expectRevert(ArmySettle__NoArmyRight.selector);
     armySettle.execute(abi.encode(13, 12, 33, 33, 34));
   }
 
   function testTooFarToSettle() public {
     settleSystem.executeTyped(15, 12);
-    vm.expectRevert(TooFarToSettle.selector);
+    vm.expectRevert(ArmySettle__TooFarToSettle.selector);
     armySettle.execute(abi.encode(30, 40, 33, 33, 34));
   }
 
   function testTooManySoldiers() public {
     settleSystem.executeTyped(30, 41);
-    vm.expectRevert(TooManySoldier.selector);
+    vm.expectRevert(ArmySettle__TooManySoldier.selector);
     armySettle.execute(abi.encode(30, 40, 33, 33, 35));
   }
 
   function testDeployOverCastle() public {
     settleSystem.executeTyped(30, 41);
-    vm.expectRevert(TileIsNotEmpty.selector);
+    vm.expectRevert(ArmySettle__TileIsNotEmpty.selector);
     armySettle.execute(abi.encode(30, 41, 33, 33, 34));
   }
 

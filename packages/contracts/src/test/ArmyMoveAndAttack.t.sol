@@ -11,8 +11,8 @@ import { PositionComponent, ID as PositionComponentID } from "components/Positio
 import { ArmyConfigComponent, ID as ArmyConfigComponentID, ArmyConfig } from "components/ArmyConfigComponent.sol";
 import { ArmyOwnableComponent, ID as ArmyOwnableComponentID } from "components/ArmyOwnableComponent.sol";
 import { ArmySettleSystem, ID as ArmySettleSystemID } from "systems/ArmySettleSystem.sol";
-import { MoveArmySystem, ID as MoveArmySystemID, NoAuthorized, TooFar, TileIsNotEmpty } from "systems/MoveArmySystem.sol";
-import { AttackSystem, ID as AttackSystemID, ArmyNotBelongYou, TooAwayToAttack, NoArmy } from "systems/AttackSystem.sol";
+import { MoveArmySystem, ID as MoveArmySystemID, MoveArmy__NoAuthorized, MoveArmy__TooFar, MoveArmy__TileIsNotEmpty } from "systems/MoveArmySystem.sol";
+import { AttackSystem, ID as AttackSystemID, AttackSystem__ArmyNotBelongYou, AttackSystem__TooAwayToAttack, AttackSystem__NoArmy } from "systems/AttackSystem.sol";
 import { LibAttack } from "libraries/LibAttack.sol";
 
 contract ArmyMoveAndAttackTest is MudTest {
@@ -55,7 +55,7 @@ contract ArmyMoveAndAttackTest is MudTest {
     vm.stopPrank();
     vm.startPrank(bob);
     uint256 foreignArmy = armyOwnable.getEntitiesWithValue(alice)[0];
-    vm.expectRevert(NoAuthorized.selector);
+    vm.expectRevert(MoveArmy__NoAuthorized.selector);
     moveArmy.execute(abi.encode(foreignArmy, 38, 40));
     vm.stopPrank();
   }
@@ -65,7 +65,7 @@ contract ArmyMoveAndAttackTest is MudTest {
     settleSystem.executeTyped(38, 40);
     armySettle.execute(abi.encode(37, 40, 33, 33, 34));
     uint256 armyID = armyOwnable.getEntitiesWithValue(alice)[0];
-    vm.expectRevert(TooFar.selector);
+    vm.expectRevert(MoveArmy__TooFar.selector);
     moveArmy.execute(abi.encode(armyID, 41, 40));
     vm.stopPrank();
   }
@@ -75,8 +75,23 @@ contract ArmyMoveAndAttackTest is MudTest {
     settleSystem.executeTyped(38, 40);
     armySettle.execute(abi.encode(37, 40, 33, 33, 34));
     uint256 armyID = armyOwnable.getEntitiesWithValue(alice)[0];
-    vm.expectRevert(TileIsNotEmpty.selector);
+    vm.expectRevert(MoveArmy__TileIsNotEmpty.selector);
     moveArmy.execute(abi.encode(armyID, 38, 40));
+    vm.stopPrank();
+  }
+
+  function testTileIsNotEmptyArmy() public {
+    vm.startPrank(alice);
+    settleSystem.executeTyped(38, 40);
+    armySettle.execute(abi.encode(37, 40, 33, 33, 34));
+    vm.stopPrank();
+    vm.startPrank(bob);
+    settleSystem.executeTyped(39, 40);
+    armySettle.execute(abi.encode(38, 41, 33, 33, 34));
+    uint256 armyID = armyOwnable.getEntitiesWithValue(bob)[0];
+    vm.expectRevert(MoveArmy__TileIsNotEmpty.selector);
+    moveArmy.execute(abi.encode(armyID, 37, 40));
+
     vm.stopPrank();
   }
 
@@ -108,7 +123,7 @@ contract ArmyMoveAndAttackTest is MudTest {
     armySettle.execute(abi.encode(33, 36, 33, 33, 34));
     uint256 armyTwoID = armyOwnable.getEntitiesWithValue(bob)[0];
     vm.stopPrank();
-    vm.expectRevert(ArmyNotBelongYou.selector);
+    vm.expectRevert(AttackSystem__ArmyNotBelongYou.selector);
     attackSystem.execute(abi.encode(armyOneID, armyTwoID));
   }
 
@@ -124,7 +139,7 @@ contract ArmyMoveAndAttackTest is MudTest {
     uint256 armyOneID = armyOwnable.getEntitiesWithValue(alice)[0];
     uint256 armyTwoID = armyOwnable.getEntitiesWithValue(bob)[0];
 
-    vm.expectRevert(TooAwayToAttack.selector);
+    vm.expectRevert(AttackSystem__TooAwayToAttack.selector);
     attackSystem.execute(abi.encode(armyOneID, armyTwoID));
     vm.stopPrank();
   }
@@ -134,7 +149,7 @@ contract ArmyMoveAndAttackTest is MudTest {
     settleSystem.executeTyped(34, 35);
     armySettle.execute(abi.encode(33, 35, 33, 33, 34));
     uint256 armyOneID = armyOwnable.getEntitiesWithValue(alice)[0];
-    vm.expectRevert(NoArmy.selector);
+    vm.expectRevert(AttackSystem__NoArmy.selector);
     attackSystem.execute(abi.encode(armyOneID, 50000));
     vm.stopPrank();
   }

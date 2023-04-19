@@ -10,9 +10,9 @@ import { LibMath } from "libraries/LibMath.sol";
 
 uint256 constant ID = uint256(keccak256("system.MoveArmy"));
 
-error NoAuthorized();
-error TooFar();
-error TileIsNotEmpty();
+error MoveArmy__NoAuthorized();
+error MoveArmy__TooFar();
+error MoveArmy__TileIsNotEmpty();
 
 contract MoveArmySystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -27,13 +27,13 @@ contract MoveArmySystem is System {
     PositionComponent position = PositionComponent(getAddressById(components, PositionComponentID));
 
     if (armyOwnable.getValue(armyOneID) != msg.sender) {
-      revert NoAuthorized();
+      revert MoveArmy__NoAuthorized();
     }
     if (LibMath.manhattan(target, position.getValue(armyOneID)) >= 3) {
-      revert TooFar();
+      revert MoveArmy__TooFar();
     }
     if (position.getEntitiesWithValue(target).length != 0) {
-      revert TileIsNotEmpty();
+      revert MoveArmy__TileIsNotEmpty();
     }
 
     position.set(armyOneID, target);
