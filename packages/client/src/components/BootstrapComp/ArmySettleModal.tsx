@@ -64,7 +64,7 @@ function ArmySettleModal() {
                       <p>Swordsman</p>
                     </div>
                     <div className="row justify-content-center mt-2">
-                      <NumberInput min={0} max={100}>
+                      <NumberInput min={0}>
                         <NumberInputField onChange={(e: any) => setSwordsmanCount(e.target.value)} onClick={(e: any) => e.target.select()} maxLength={3} />
                       </NumberInput>
                     </div>
@@ -77,7 +77,7 @@ function ArmySettleModal() {
                       <p>Archer</p>
                     </div>
                     <div className="row justify-content-center mt-2">
-                      <NumberInput min={0} max={100}>
+                      <NumberInput min={0}>
                         <NumberInputField onChange={(e: any) => setArcherCount(e.target.value)} onClick={(e: any) => e.target.select()} maxLength={3} />
                       </NumberInput>
                     </div>
@@ -90,7 +90,7 @@ function ArmySettleModal() {
                       <p>Cavalry</p>
                     </div>
                     <div className="row justify-content-center mt-2">
-                      <NumberInput min={0} max={100}>
+                      <NumberInput min={0}>
                         <NumberInputField onChange={(e: any) => setCavalryCount(e.target.value)} onClick={(e: any) => e.target.select()} maxLength={3} />
                       </NumberInput>
                     </div>

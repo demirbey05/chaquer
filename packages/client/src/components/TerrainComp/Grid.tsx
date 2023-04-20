@@ -55,6 +55,7 @@ export function Grid(data: DataProp) {
   const columns = Array.from({ length: width }, (v, i) => i);
 
   const { isCastleSettled, setTempCastle, setIsCastleSettled, isArmyStage, setArmyPosition } = useTerrain();
+
   const castlePositions = useCastlePositions();
   const burnerWallets = useBurnerWallets();
   const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
@@ -69,6 +70,7 @@ export function Grid(data: DataProp) {
   };
 
   useEffect(() => {
+    //Checks that if the user has already settled the castle
     if (castlePositions) {
       burnerWallets.map((wallet) => {
         if (wallet.value.toLocaleLowerCase() === getBurnerWallet().address.toLocaleLowerCase()) {
@@ -79,12 +81,20 @@ export function Grid(data: DataProp) {
         }
       });
 
+      //Puts the castle emojis to castle positions
       castlePositions.map(
         (data) =>
           (document.getElementById(`${data.y}${data.x}`)!.innerHTML = "🏰")
       );
     }
   }, [castlePositions]);
+
+  useEffect(() => {
+    //Makes castle position unClickable to not cause bug during army settlement
+    castlePositions.map((data) => {
+      document.getElementById(`${data.y}${data.x}`)!.setAttribute('data-bs-toggle', '');
+    })
+  }, [isArmyStage])
 
   return (
     <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`}>
