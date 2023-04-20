@@ -20,7 +20,7 @@ function ArmySettleModal() {
       setIsDisabled(true);
     }
 
-    if (parseInt(swordsmanCount) + parseInt(archerCount) + parseInt(cavalryCount) <= 100) {
+    if (parseInt(swordsmanCount) + parseInt(archerCount) + parseInt(cavalryCount) <= 100 && parseInt(swordsmanCount) + parseInt(archerCount) + parseInt(cavalryCount) > 0) {
       setIsDisabled(false)
     }
     else {

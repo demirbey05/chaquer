@@ -47,6 +47,37 @@ function canCastleBeSettle(data: any) {
   return true;
 }
 
+function canArmyBeSettle(position: { x: number, y: number }) {
+  const positions = [
+    { x: position.x + 1, y: position.y },
+    { x: position.x + 1, y: position.y + 1 },
+    { x: position.x + 1, y: position.y + 2 },
+    { x: position.x + 1, y: position.y - 1 },
+    { x: position.x + 1, y: position.y - 2 },
+    { x: position.x + 2, y: position.y },
+    { x: position.x + 2, y: position.y + 1 },
+    { x: position.x + 2, y: position.y - 1 },
+    { x: position.x + 3, y: position.y },
+    { x: position.x - 1, y: position.y },
+    { x: position.x - 1, y: position.y + 1 },
+    { x: position.x - 1, y: position.y + 2 },
+    { x: position.x - 1, y: position.y - 2 },
+    { x: position.x - 1, y: position.y - 1 },
+    { x: position.x - 2, y: position.y },
+    { x: position.x - 2, y: position.y + 1 },
+    { x: position.x - 2, y: position.y - 1 },
+    { x: position.x - 3, y: position.y },
+    { x: position.x, y: position.y + 1 },
+    { x: position.x, y: position.y + 2 },
+    { x: position.x, y: position.y + 3 },
+    { x: position.x, y: position.y - 3 },
+    { x: position.x, y: position.y - 2 },
+    { x: position.x, y: position.y - 1 },
+  ]
+
+  return positions;
+}
+
 export function Grid(data: DataProp) {
   const width = data.width;
   const height = data.height;
@@ -123,6 +154,9 @@ export function Grid(data: DataProp) {
               className={`${!data.isBorder &&
                 canCastleBeSettle(values[row][column]) &&
                 "borderHover"
+                }${myCastlePosition &&
+                  isArmyStage &&
+                  canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? " borderHoverArmy" : ""
                 }`}
               data-bs-toggle={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
@@ -130,7 +164,8 @@ export function Grid(data: DataProp) {
                 }${canCastleBeSettle(values[row][column]) &&
                   isCastleSettled &&
                   !data.isBorder &&
-                  isArmyStage ? "modal" : ""
+                  isArmyStage &&
+                  canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? "modal" : ""
                 }`}
               data-bs-target={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
@@ -138,7 +173,8 @@ export function Grid(data: DataProp) {
                 }${canCastleBeSettle(values[row][column]) &&
                   isCastleSettled &&
                   !data.isBorder &&
-                  isArmyStage ? "#armySettleModal" : ""
+                  isArmyStage &&
+                  canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? "#armySettleModal" : ""
                 }`}
             ></div>
           );
