@@ -7,7 +7,7 @@ function SmallMap() {
     const values = map;
     const smallMap = [1,2];
     return (
-        <div style={{position:"fixed", zIndex:"1", bottom:"0", left:"0", marginLeft:"2px",marginBottom:"2px"}}>
+        <div style={{position:"absolute", margin: "12.5px auto", zIndex:"1", bottom:"0", left:"0", right:"0"}}>
             <Grid width={width} height={height} values={values} pixelStyles={smallMap} isBorder={true}/>
         </div>
     )

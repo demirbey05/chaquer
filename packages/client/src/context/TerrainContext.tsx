@@ -17,33 +17,43 @@ type TerrainContextType = {
   isLoading: boolean;
   setPermArray: (value: any) => void;
   saveTerrain: () => void;
-  handleTileClick: () => void;
   isCastleSettled: boolean | undefined;
   setIsCastleSettled: (value: boolean) => void;
   setCastle: (value: { x: number; y: number }) => void;
   castle: { x: any; y: any };
-  setTempCastle: (value: {x: number; y:number}) => void;
+  setTempCastle: (value: { x: number; y: number }) => void;
   tempCastle: { x: any, y: any };
+  isArmySettled: boolean | undefined;
+  setIsArmySettled: (value: boolean) => void;
+  isArmyStage: boolean | undefined;
+  setIsArmyStage: (value: boolean) => void;
+  setArmyPosition: (value: { x: number; y: number }) => void;
+  armyPosition: { x: any; y: any };
 };
 
 const TerrainContext = createContext<TerrainContextType>({
   values: null,
-  setIsLoading: () => {},
+  setIsLoading: () => { },
   width: 100,
   height: 100,
-  setValues: () => {},
-  setRefresh: () => {},
+  setValues: () => { },
+  setRefresh: () => { },
   refresh: 0,
   isLoading: false,
-  setPermArray: () => {},
-  saveTerrain: () => {},
-  handleTileClick: () => {},
+  setPermArray: () => { },
+  saveTerrain: () => { },
   isCastleSettled: false,
-  setIsCastleSettled: () => {},
-  setCastle: () => {},
+  setIsCastleSettled: () => { },
+  setCastle: () => { },
   castle: { x: null, y: null },
-  setTempCastle: () => {},
-  tempCastle: { x: null, y: null}
+  setTempCastle: () => { },
+  tempCastle: { x: null, y: null },
+  isArmySettled: false,
+  setIsArmySettled: () => { },
+  isArmyStage: false,
+  setIsArmyStage: () => { },
+  setArmyPosition: () => { },
+  armyPosition: { x: null, y: null }
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -60,6 +70,9 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
   const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
   const [castle, setCastle] = useState<any>();
   const [tempCastle, setTempCastle] = useState<any>();
+  const [isArmySettled, setIsArmySettled] = useState<boolean>();
+  const [isArmyStage, setIsArmyStage] = useState<boolean>();
+  const [armyPosition, setArmyPosition] = useState<any>();
 
   useEffect(() => {
     saveTerrain();
@@ -77,14 +90,6 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     window.localStorage.setItem("terrain", JSON.stringify(values));
   };
 
-  const handleTileClick = () => {
-    if (!isCastleSettled) {
-      console.log(castle);
-      setIsCastleSettled(true);
-    } else {
-    }
-  };
-
   const results: TerrainContextType = {
     values,
     setIsLoading,
@@ -96,13 +101,18 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     isLoading,
     setPermArray,
     saveTerrain,
-    handleTileClick,
     isCastleSettled,
     setCastle,
     castle,
     setTempCastle,
     tempCastle,
-    setIsCastleSettled
+    setIsCastleSettled,
+    isArmySettled,
+    setIsArmySettled,
+    isArmyStage,
+    setIsArmyStage,
+    armyPosition,
+    setArmyPosition
   };
 
   return (

@@ -19,7 +19,3 @@
 .borderHover:hover::after {
     box-shadow: inset 0 0 0 5px rgba(255,255,255,.5);
 }
-
-.modal-backdrop {
-    z-index: -1;
-}

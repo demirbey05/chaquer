@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useBurnerWallets } from "../../hooks/useBurnerWallets";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
+import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 
 export type DataProp = {
   width: number;
@@ -53,7 +54,7 @@ export function Grid(data: DataProp) {
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
 
-  const { isCastleSettled, setTempCastle, setIsCastleSettled } = useTerrain();
+  const { isCastleSettled, setTempCastle, setIsCastleSettled, isArmyStage, setArmyPosition } = useTerrain();
   const castlePositions = useCastlePositions();
   const burnerWallets = useBurnerWallets();
   const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
@@ -62,22 +63,22 @@ export function Grid(data: DataProp) {
     if (!isCastleSettled) {
       setTempCastle({ x: getDataAtrX(e), y: getDataAtrY(e) });
     }
+    if (isArmyStage) {
+      setArmyPosition({ x: getDataAtrX(e), y: getDataAtrY(e) })
+    }
   };
 
   useEffect(() => {
-    if (castlePositions) 
-    {
+    if (castlePositions) {
       burnerWallets.map((wallet) => {
-        if(wallet.value.toLocaleLowerCase() === getBurnerWallet().address.toLocaleLowerCase())
-        {
-          if(myCastlePosition)
-          {
+        if (wallet.value.toLocaleLowerCase() === getBurnerWallet().address.toLocaleLowerCase()) {
+          if (myCastlePosition) {
             document.getElementById(`${myCastlePosition.y}${myCastlePosition.x}`)!.className = "border-1"
           }
           setIsCastleSettled(true);
         }
       });
-      
+
       castlePositions.map(
         (data) =>
           (document.getElementById(`${data.y}${data.x}`)!.innerHTML = "🏰")
@@ -104,33 +105,37 @@ export function Grid(data: DataProp) {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                fontSize:`${data.isBorder && "3.5px"}`
+                fontSize: `${data.isBorder && "3.5px"}`
               }}
               onClick={(e) => {
                 handleClick(e);
               }}
-              className={`${
-                !data.isBorder &&
+              className={`${!data.isBorder &&
                 canCastleBeSettle(values[row][column]) &&
                 "borderHover"
-              }`}
-              data-bs-toggle={`${
-                canCastleBeSettle(values[row][column]) &&
+                }`}
+              data-bs-toggle={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
-                !data.isBorder &&
-                "modal"
-              }`}
-              data-bs-target={`${
-                canCastleBeSettle(values[row][column]) &&
+                !data.isBorder ? "modal" : ""
+                }${canCastleBeSettle(values[row][column]) &&
+                  isCastleSettled &&
+                  !data.isBorder &&
+                  isArmyStage ? "modal" : ""
+                }`}
+              data-bs-target={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
-                !data.isBorder &&
-                "#exampleModal"
-              }`}
+                !data.isBorder ? "#castleSettleModal" : ""
+                }${canCastleBeSettle(values[row][column]) &&
+                  isCastleSettled &&
+                  !data.isBorder &&
+                  isArmyStage ? "#armySettleModal" : ""
+                }`}
             ></div>
           );
         });
       })}
       <CastleSettleModal></CastleSettleModal>
+      <ArmySettleModal></ArmySettleModal>
     </div>
   );
 }
