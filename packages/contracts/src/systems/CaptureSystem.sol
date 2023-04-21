@@ -54,24 +54,17 @@ contract CaptureSystem is System {
 
     console.log("Entities length is ");
     console.log(ownerArmies.length);
-    bytes memory warResult;
-    for (uint i = 0; i < ownerArmies.length; i++) {
-      if (LibMath.manhattan(castleCoord, position.getValue(ownerArmies[i])) > 2) {
-        console.log("Continued");
-        continue;
-      }
-      warResult = LibAttack.warBetweenArmies(armyID, ownerArmies[i], armyConfig, armyOwnable);
+    bytes memory warResult = LibAttack.warCaptureCastle(armyID, ownerArmies, armyConfig, armyOwnable);
 
-      (uint256 winnerid, int32 score) = abi.decode(warResult, (uint256, int32));
-      if (winnerid == 2) {
-        console.log("Siege is failed");
-        console.logInt(score);
-        return abi.encode(1);
-      }
+    (uint256 result, ) = abi.decode(warResult, (uint256, int32));
+    if (result == 1) {
+      castleOwnable.set(castleID, armyOwner);
+      console.log("Siege is successful");
+      return abi.encode(1);
+    } else if (result == 0) {
+      return abi.encode(0);
     }
-
-    castleOwnable.set(castleID, armyOwner);
-    console.log("Siege is successful");
+    console.log("Siege is failed");
     return abi.encode(2);
   }
 }
