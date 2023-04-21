@@ -13,6 +13,7 @@ import { ArmyOwnableComponent, ID as ArmyOwnableComponentID } from "components/A
 import { ArmySettleSystem, ID as ArmySettleSystemID } from "systems/ArmySettleSystem.sol";
 import { CastleOwnableComponent, ID as CastleOwnableComponentID } from "components/CastleOwnableComponent.sol";
 import { CaptureSystem, ID as CaptureSystemID, CaptureSystem__NoAuthorization, CaptureSystem__TooFarToAttack, CaptureSystem__FriendFireNotAllowed } from "systems/CaptureSystem.sol";
+import { MoveArmySystem, ID as MoveArmySystemID } from "systems/MoveArmySystem.sol";
 
 contract CaptureTest is MudTest {
   PositionComponent position;
@@ -23,6 +24,7 @@ contract CaptureTest is MudTest {
   ArmySettleSystem armySettle;
   CastleOwnableComponent castleOwnable;
   CaptureSystem captureSystem;
+  MoveArmySystem moveArmy;
 
   constructor() MudTest(new Deploy()) {}
 
@@ -40,6 +42,7 @@ contract CaptureTest is MudTest {
     castleOwnable = CastleOwnableComponent(getAddressById(components, CastleOwnableComponentID));
     castleSettle = CastleSettleSystem(getAddressById(systems, CastleSettleSystemID));
     captureSystem = CaptureSystem(getAddressById(systems, CaptureSystemID));
+    moveArmy = MoveArmySystem(getAddressById(systems, MoveArmySystemID));
 
     // Initiialize previous steps
     bytes memory mapData = bytes(vm.readFile("src/test/mock_data/full_data.txt"));
@@ -192,6 +195,44 @@ contract CaptureTest is MudTest {
     vm.startPrank(bob);
     bytes memory data = captureSystem.execute(abi.encode(castleID, armyID));
     assertEq(2, abi.decode(data, (uint)));
+    vm.stopPrank();
+  }
+
+  function testMultipleArmySiegeThree() public {
+    uint256 armyID = deployArmy(bob, 36, 36, 67, 26, 6); // Castle at 35,36
+    uint256 castleID = deployCastle(alice, 36, 37);
+    deployArmyWithoutCastle(alice, 35, 37, 50, 0, 0);
+    deployArmyWithoutCastle(alice, 34, 37, 0, 19, 0);
+    deployArmyWithoutCastle(alice, 33, 37, 0, 0, 14);
+
+    vm.startPrank(bob);
+    bytes memory data = captureSystem.execute(abi.encode(castleID, armyID));
+    assertEq(1, abi.decode(data, (uint)));
+    vm.stopPrank();
+  }
+
+  function testNoArmySiege() public {
+    uint256 armyID = deployArmy(bob, 36, 36, 19, 67, 12); // Castle at 35,36
+    uint256 castleID = deployCastle(alice, 36, 37);
+    vm.startPrank(bob);
+    bytes memory data = captureSystem.execute(abi.encode(castleID, armyID));
+    assertEq(1, abi.decode(data, (uint)));
+    vm.stopPrank();
+  }
+
+  function testNoCloseArmySiege() public {
+    uint256 armyID = deployArmy(bob, 36, 36, 19, 67, 12); // Castle at 35,36
+    uint256 castleID = deployCastle(alice, 36, 37);
+    uint256 moveArmyID = deployArmyWithoutCastle(alice, 35, 37, 44, 15, 0);
+    vm.startPrank(alice);
+    moveArmy.execute(abi.encode(moveArmyID, 35, 38));
+    moveArmy.execute(abi.encode(moveArmyID, 35, 39));
+    moveArmy.execute(abi.encode(moveArmyID, 35, 40));
+    vm.stopPrank();
+
+    vm.startPrank(bob);
+    bytes memory data = captureSystem.execute(abi.encode(castleID, armyID));
+    assertEq(1, abi.decode(data, (uint)));
     vm.stopPrank();
   }
 }

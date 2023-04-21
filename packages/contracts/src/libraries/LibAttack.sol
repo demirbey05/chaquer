@@ -44,12 +44,16 @@ library LibAttack {
     ArmyConfig memory defenderArmy;
 
     for (uint i = 0; i < defenderArmies.length; i++) {
+      if (defenderArmies[i] == 0) {
+        continue;
+      }
       ArmyConfig memory currentArmy = armyConfig.getValue(defenderArmies[i]);
       defenderArmy.numSwordsman += currentArmy.numSwordsman;
       defenderArmy.numArcher += currentArmy.numArcher;
       defenderArmy.numCavalry += currentArmy.numCavalry;
     }
     console.log("Attacker Army is");
+
     BattleScore memory battleScore = calculateBattleScores(attackerArmy, defenderArmy);
 
     if (battleScore.scoreArmyOne > battleScore.scoreArmyTwo) {

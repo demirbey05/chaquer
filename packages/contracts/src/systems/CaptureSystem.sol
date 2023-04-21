@@ -23,6 +23,26 @@ error CaptureSystem__FriendFireNotAllowed();
 contract CaptureSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
 
+  function findSurroundedArmies(
+    uint256 castleID,
+    uint256[] memory ownerArmies,
+    PositionComponent position
+  ) internal returns (uint256[] memory) {
+    uint256[] memory ownerArmiesSurroundCastle = new uint256[](ownerArmies.length);
+    uint current = 0;
+    Coord memory castleCoord = position.getValue(castleID);
+    console.log(ownerArmies.length);
+
+    for (uint i = 0; i < ownerArmies.length; i++) {
+      if (LibMath.manhattan(position.getValue(ownerArmies[i]), castleCoord) <= 3) {
+        console.log("One is added");
+        ownerArmiesSurroundCastle[current] = ownerArmies[i];
+        current++;
+      }
+    }
+    return ownerArmiesSurroundCastle;
+  }
+
   function execute(bytes memory args) public returns (bytes memory) {
     (uint256 castleID, uint256 armyID) = abi.decode(args, (uint, uint));
     return executeTyped(castleID, armyID);
@@ -46,15 +66,17 @@ contract CaptureSystem is System {
       revert CaptureSystem__TooFarToAttack();
     }
 
-    Coord memory castleCoord = position.getValue(castleID);
     address castleOwner = castleOwnable.getValue(castleID);
     address armyOwner = armyOwnable.getValue(armyID);
 
     uint256[] memory ownerArmies = armyOwnable.getEntitiesWithValue(castleOwner);
-
-    console.log("Entities length is ");
+    uint256[] memory ownerArmiesSurroundCastle = findSurroundedArmies(castleID, ownerArmies, position);
+    console.log("All Army length is ");
     console.log(ownerArmies.length);
-    bytes memory warResult = LibAttack.warCaptureCastle(armyID, ownerArmies, armyConfig, armyOwnable);
+
+    console.log("Close Army length is ");
+    console.log(ownerArmiesSurroundCastle.length);
+    bytes memory warResult = LibAttack.warCaptureCastle(armyID, ownerArmiesSurroundCastle, armyConfig, armyOwnable);
 
     (uint256 result, ) = abi.decode(warResult, (uint256, int32));
     if (result == 1) {

@@ -287,4 +287,24 @@ contract ArmyMoveAndAttackTest is MudTest {
     assertEq(winnerid, 1);
     assertEq(armyOwnable.getEntitiesWithValue(bob).length, 0);
   }
+
+  function testTieTwoArmy() public {
+    uint256 armyOne = deployArmy(alice, 33, 34, 97, 2, 0);
+    uint256 armyTwo = deployArmy(bob, 35, 34, 97, 2, 0);
+
+    vm.startPrank(alice);
+    bool isOneExist = armyConfig.has(armyOne);
+    bool isTwoExist = armyConfig.has(armyTwo);
+
+    bytes memory winner = attackSystem.execute(abi.encode(armyOne, armyTwo));
+    (uint256 winnerid, int32 score) = abi.decode(winner, (uint256, int32));
+
+    bool newIsOneExist = armyConfig.has(armyOne);
+    bool newIsTwoExist = armyConfig.has(armyTwo);
+    assertEq(winnerid, 0);
+    assertTrue(isOneExist == true);
+    assertTrue(isTwoExist == true);
+    assertTrue(newIsOneExist == false);
+    assertTrue(newIsTwoExist == false);
+  }
 }

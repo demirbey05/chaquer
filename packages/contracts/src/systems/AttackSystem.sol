@@ -70,6 +70,10 @@ contract AttackSystem is System {
       armyConfig.set(armyTwoID, newConfig);
       return abi.encode(2, battleScore.scoreArmyTwo);
     } else {
+      armyConfig.remove(armyTwoID);
+      armyOwnable.remove(armyTwoID);
+      armyConfig.remove(armyOneID);
+      armyOwnable.remove(armyOneID);
       return abi.encode(0, battleScore.scoreArmyOne);
     }
   }
