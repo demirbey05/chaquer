@@ -15,6 +15,7 @@ uint256 constant ID = uint256(keccak256("system.Attack"));
 error AttackSystem__ArmyNotBelongYou();
 error AttackSystem__TooAwayToAttack();
 error AttackSystem__NoArmy();
+error AttackSystem__NoFriendFire();
 
 contract AttackSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -37,8 +38,11 @@ contract AttackSystem is System {
     }
     uint32 distanceBetween = LibMath.manhattan(position.getValue(armyOneID), position.getValue(armyTwoID));
 
-    if (!(distanceBetween < 3)) {
+    if (!(distanceBetween <= 3)) {
       revert AttackSystem__TooAwayToAttack();
+    }
+    if (armyOwnable.getValue(armyOneID) == armyOwnable.getValue(armyTwoID)) {
+      revert AttackSystem__NoFriendFire();
     }
 
     ArmyConfig memory armyOne = armyConfig.getValue(armyOneID);

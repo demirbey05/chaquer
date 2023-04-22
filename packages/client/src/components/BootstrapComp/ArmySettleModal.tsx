@@ -1,97 +1,154 @@
 import { useTerrain } from "../../context/TerrainContext";
 import { useMUD } from "../../MUDContext";
 import { Button, NumberInput, NumberInputField } from "@chakra-ui/react";
-import archerImg from '../../images/archer.png';
-import cavalryImg from '../../images/cavalry.png';
-import swordsmanImg from '../../images/swordsman.png';
-import { useState, useEffect } from "react";
+import archerImg from "../../images/archer.png";
+import cavalryImg from "../../images/cavalry.png";
+import swordsmanImg from "../../images/swordsman.png";
+import { useState, useEffect, useRef } from "react";
+import { utils } from "ethers";
 
 function ArmySettleModal() {
   const { armyPosition, setIsArmyStage, setIsArmySettled } = useTerrain();
   const { systems } = useMUD();
+  const { current: abiCoder } = useRef(new utils.AbiCoder());
 
-  const [swordsmanCount, setSwordsmanCount] = useState<string>('');
-  const [archerCount, setArcherCount] = useState<string>('');
-  const [cavalryCount, setCavalryCount] = useState<string>('');
+  const [swordsmanCount, setSwordsmanCount] = useState<string>("");
+  const [archerCount, setArcherCount] = useState<string>("");
+  const [cavalryCount, setCavalryCount] = useState<string>("");
   const [isDisabled, setIsDisabled] = useState(true);
 
   useEffect(() => {
-    if (swordsmanCount && swordsmanCount.toString().length === 0 || archerCount && archerCount.toString().length === 0 || cavalryCount && cavalryCount.toString().length === 0) {
+    if (
+      (swordsmanCount && swordsmanCount.toString().length === 0) ||
+      (archerCount && archerCount.toString().length === 0) ||
+      (cavalryCount && cavalryCount.toString().length === 0)
+    ) {
       setIsDisabled(true);
     }
 
-    if (parseInt(swordsmanCount) + parseInt(archerCount) + parseInt(cavalryCount) <= 100 && parseInt(swordsmanCount) + parseInt(archerCount) + parseInt(cavalryCount) > 0) {
-      setIsDisabled(false)
+    if (
+      parseInt(swordsmanCount) +
+        parseInt(archerCount) +
+        parseInt(cavalryCount) <=
+        100 &&
+      parseInt(swordsmanCount) +
+        parseInt(archerCount) +
+        parseInt(cavalryCount) >
+        0
+    ) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
     }
-    else {
-      setIsDisabled(true)
-    }
-  }, [swordsmanCount, archerCount, cavalryCount])
+  }, [swordsmanCount, archerCount, cavalryCount]);
 
   const handleClick = async () => {
-    //Kanka buradan transaction ı atarsın. swordsmanCount, archerCount
-    // ve cavaltyCount lar asker sayıları.
-    // useTerrain den gelen armyPositionda army pozisyonu.
     // Transaction sonrası eğer transaction başarılı ise !!!! setIsArmyStage(false) ve setArmyIsSettled(true) yaparsın.
-    // Yorumları ev aşağıdakileri silersin.
-    console.log(armyPosition)
-    console.log("Swordsman: " + swordsmanCount)
-    console.log("Archer: " + archerCount)
-    console.log("Cavalry: " + cavalryCount)
-    setIsArmySettled(true);
-    setIsArmyStage(false);
+
+    const tx = await systems["system.ArmySettle"].execute(
+      abiCoder.encode(
+        ["uint32", "uint32", "uint32", "uint32", "uint32"],
+        [
+          armyPosition.x,
+          armyPosition.y,
+          swordsmanCount,
+          archerCount,
+          cavalryCount,
+        ]
+      )
+    );
+    if (tx) {
+      // await tx
+      setIsArmySettled(true);
+      setIsArmyStage(false);
+      await tx.wait(1);
+    }
   };
 
   return (
     <>
-      <div className="modal fade" id="armySettleModal" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div
+        className="modal fade"
+        id="armySettleModal"
+        data-bs-backdrop="static"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">Army Settlement</h1>
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                Army Settlement
+              </h1>
             </div>
             <div className="modal-body">
               <div className="container-fluid">
                 <div className="row border-bottom">
-                  <p>Please determine the number of warriors that will hold in the army.</p>
+                  <p>
+                    Please determine the number of warriors that will hold in
+                    the army.
+                  </p>
                 </div>
                 <div className="row mt-2">
                   <div className="col align-items-center">
                     <div className="row justify-content-center">
-                      <img src={swordsmanImg} style={{ height: "100px", width: "75px" }} />
+                      <img
+                        src={swordsmanImg}
+                        style={{ height: "100px", width: "75px" }}
+                      />
                     </div>
                     <div className="row justify-content-center text-center border-1 mt-2">
                       <p>Swordsman</p>
                     </div>
                     <div className="row justify-content-center mt-2">
                       <NumberInput min={0}>
-                        <NumberInputField onChange={(e: any) => setSwordsmanCount(e.target.value)} onClick={(e: any) => e.target.select()} maxLength={3} />
+                        <NumberInputField
+                          onChange={(e: any) =>
+                            setSwordsmanCount(e.target.value)
+                          }
+                          onClick={(e: any) => e.target.select()}
+                          maxLength={3}
+                        />
                       </NumberInput>
                     </div>
                   </div>
                   <div className="col align-items-center">
                     <div className="row justify-content-center">
-                      <img src={archerImg} style={{ height: "100px", width: "75px" }} />
+                      <img
+                        src={archerImg}
+                        style={{ height: "100px", width: "75px" }}
+                      />
                     </div>
                     <div className="row justify-content-center text-center border-1 mt-2">
                       <p>Archer</p>
                     </div>
                     <div className="row justify-content-center mt-2">
                       <NumberInput min={0}>
-                        <NumberInputField onChange={(e: any) => setArcherCount(e.target.value)} onClick={(e: any) => e.target.select()} maxLength={3} />
+                        <NumberInputField
+                          onChange={(e: any) => setArcherCount(e.target.value)}
+                          onClick={(e: any) => e.target.select()}
+                          maxLength={3}
+                        />
                       </NumberInput>
                     </div>
                   </div>
                   <div className="col align-items-center">
                     <div className="row justify-content-center">
-                      <img src={cavalryImg} style={{ height: "100px", width: "100px" }} />
+                      <img
+                        src={cavalryImg}
+                        style={{ height: "100px", width: "100px" }}
+                      />
                     </div>
                     <div className="row justify-content-center text-center border-1 mt-2">
                       <p>Cavalry</p>
                     </div>
                     <div className="row justify-content-center mt-2">
                       <NumberInput min={0}>
-                        <NumberInputField onChange={(e: any) => setCavalryCount(e.target.value)} onClick={(e: any) => e.target.select()} maxLength={3} />
+                        <NumberInputField
+                          onChange={(e: any) => setCavalryCount(e.target.value)}
+                          onClick={(e: any) => e.target.select()}
+                          maxLength={3}
+                        />
                       </NumberInput>
                     </div>
                   </div>
@@ -99,12 +156,22 @@ function ArmySettleModal() {
               </div>
             </div>
             <div className="modal-footer">
-              <Button colorScheme="whatsapp" border="solid" textColor="dark" data-bs-dismiss="modal" isDisabled={isDisabled}
+              <Button
+                colorScheme="whatsapp"
+                border="solid"
+                textColor="dark"
+                data-bs-dismiss="modal"
+                isDisabled={isDisabled}
                 onClick={() => handleClick()}
               >
                 Settle Army
               </Button>
-              <Button colorScheme="red" border="solid" textColor="dark" data-bs-dismiss="modal">
+              <Button
+                colorScheme="red"
+                border="solid"
+                textColor="dark"
+                data-bs-dismiss="modal"
+              >
                 Back to Map
               </Button>
             </div>
@@ -112,7 +179,7 @@ function ArmySettleModal() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default ArmySettleModal
+export default ArmySettleModal;

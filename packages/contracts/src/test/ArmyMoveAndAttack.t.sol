@@ -12,7 +12,7 @@ import { ArmyConfigComponent, ID as ArmyConfigComponentID, ArmyConfig } from "co
 import { ArmyOwnableComponent, ID as ArmyOwnableComponentID } from "components/ArmyOwnableComponent.sol";
 import { ArmySettleSystem, ID as ArmySettleSystemID } from "systems/ArmySettleSystem.sol";
 import { MoveArmySystem, ID as MoveArmySystemID, MoveArmy__NoAuthorized, MoveArmy__TooFar, MoveArmy__TileIsNotEmpty } from "systems/MoveArmySystem.sol";
-import { AttackSystem, ID as AttackSystemID, AttackSystem__ArmyNotBelongYou, AttackSystem__TooAwayToAttack, AttackSystem__NoArmy } from "systems/AttackSystem.sol";
+import { AttackSystem, ID as AttackSystemID, AttackSystem__ArmyNotBelongYou, AttackSystem__TooAwayToAttack, AttackSystem__NoArmy, AttackSystem__NoFriendFire } from "systems/AttackSystem.sol";
 import { LibAttack } from "libraries/LibAttack.sol";
 
 contract ArmyMoveAndAttackTest is MudTest {
@@ -124,6 +124,17 @@ contract ArmyMoveAndAttackTest is MudTest {
     uint256 armyTwoID = armyOwnable.getEntitiesWithValue(bob)[0];
     vm.stopPrank();
     vm.expectRevert(AttackSystem__ArmyNotBelongYou.selector);
+    attackSystem.execute(abi.encode(armyOneID, armyTwoID));
+  }
+
+  function testFriendFire() public {
+    vm.startPrank(alice);
+    settleSystem.executeTyped(34, 35);
+    armySettle.execute(abi.encode(33, 35, 33, 33, 34));
+    armySettle.execute(abi.encode(32, 35, 33, 33, 34));
+    uint256 armyOneID = armyOwnable.getEntitiesWithValue(alice)[0];
+    uint256 armyTwoID = armyOwnable.getEntitiesWithValue(alice)[1];
+    vm.expectRevert(AttackSystem__NoFriendFire.selector);
     attackSystem.execute(abi.encode(armyOneID, armyTwoID));
   }
 
