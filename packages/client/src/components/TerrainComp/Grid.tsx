@@ -6,11 +6,13 @@ import { useTerrain } from "../../context/TerrainContext";
 import "../../styles/globals.css";
 import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
 import { useCastlePositions } from "../../hooks/useCastlePositions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useBurnerWallets } from "../../hooks/useBurnerWallets";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
+import { useArmyPositions } from "../../hooks/useArmyPositions";
+import { useUserArmy } from "../../hooks/useUserArmy";
 
 export type DataProp = {
   width: number;
@@ -85,11 +87,17 @@ export function Grid(data: DataProp) {
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
 
-  const { isCastleSettled, setTempCastle, setIsCastleSettled, isArmyStage, setArmyPosition } = useTerrain();
+  const { isCastleSettled, setTempCastle, setIsCastleSettled, isArmyStage, setArmyPosition, setNumberOfArmy, numberOfArmy } = useTerrain();
 
   const castlePositions = useCastlePositions();
   const burnerWallets = useBurnerWallets();
   const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
+  const armyPositions: any = useArmyPositions();
+  const myArmyPosition: any = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
+  const myArmyNumber = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[1];
+  const myArmyConfig: any = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[2];
+
+  console.log(myArmyConfig);
 
   const handleClick = (e: any) => {
     if (!isCastleSettled) {
@@ -106,7 +114,7 @@ export function Grid(data: DataProp) {
       burnerWallets.map((wallet) => {
         if (wallet.value.toLocaleLowerCase() === getBurnerWallet().address.toLocaleLowerCase()) {
           if (myCastlePosition) {
-            document.getElementById(`${myCastlePosition.y}${myCastlePosition.x}`)!.className = "border-1"
+            document.getElementById(`${myCastlePosition.y}${myCastlePosition.x}`)!.style.border = "2px solid rgb(245, 169, 6)"
           }
           setIsCastleSettled(true);
         }
@@ -127,6 +135,25 @@ export function Grid(data: DataProp) {
     })
   }, [isArmyStage])
 
+  useEffect(() => {
+    if (myArmyPosition) {
+      myArmyPosition.map((data: any) => {
+        document.getElementById(`${data.y}${data.x}`)!.style.border = "2px solid rgb(245, 169, 6)";
+      })
+    }
+
+    if (myArmyNumber) {
+      setNumberOfArmy(myArmyNumber)
+    }
+
+    //Puts the castle emojis to castle positions
+    armyPositions.map(
+      (data: any) => {
+        document.getElementById(`${data.y}${data.x}`)!.innerHTML = "⚔️";
+      }
+    );
+  }, [armyPositions]);
+
   return (
     <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`}>
       {rows.map((row) => {
@@ -143,6 +170,7 @@ export function Grid(data: DataProp) {
                 width: `${data.pixelStyles[1]}px`,
                 height: `${data.pixelStyles[1]}px`,
                 backgroundImage: `${bgImg(values[row][column])}`,
+                backgroundSize: "cover",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -151,12 +179,10 @@ export function Grid(data: DataProp) {
               onClick={(e) => {
                 handleClick(e);
               }}
-              className={`${!data.isBorder &&
+              className={`${myCastlePosition && canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? "borderHoverArmy" : ""
+                }${!data.isBorder &&
                 canCastleBeSettle(values[row][column]) &&
-                "borderHover"
-                }${myCastlePosition &&
-                  isArmyStage &&
-                  canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? " borderHoverArmy" : ""
+                " borderHover"
                 }`}
               data-bs-toggle={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
@@ -164,7 +190,7 @@ export function Grid(data: DataProp) {
                 }${canCastleBeSettle(values[row][column]) &&
                   isCastleSettled &&
                   !data.isBorder &&
-                  isArmyStage &&
+                  isArmyStage && (numberOfArmy !== 3) &&
                   canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? "modal" : ""
                 }`}
               data-bs-target={`${canCastleBeSettle(values[row][column]) &&
@@ -173,7 +199,7 @@ export function Grid(data: DataProp) {
                 }${canCastleBeSettle(values[row][column]) &&
                   isCastleSettled &&
                   !data.isBorder &&
-                  isArmyStage &&
+                  isArmyStage && (numberOfArmy !== 3) &&
                   canArmyBeSettle(myCastlePosition).some(item => item.x === row && item.y === column) ? "#armySettleModal" : ""
                 }`}
             ></div>

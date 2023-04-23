@@ -29,6 +29,8 @@ type TerrainContextType = {
   setIsArmyStage: (value: boolean) => void;
   setArmyPosition: (value: { x: number; y: number }) => void;
   armyPosition: { x: any; y: any };
+  numberOfArmy: any;
+  setNumberOfArmy: (value: any) => void;
 };
 
 const TerrainContext = createContext<TerrainContextType>({
@@ -53,7 +55,9 @@ const TerrainContext = createContext<TerrainContextType>({
   isArmyStage: false,
   setIsArmyStage: () => { },
   setArmyPosition: () => { },
-  armyPosition: { x: null, y: null }
+  armyPosition: { x: null, y: null },
+  numberOfArmy: null,
+  setNumberOfArmy: () => { }
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -73,6 +77,7 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
   const [isArmySettled, setIsArmySettled] = useState<boolean>();
   const [isArmyStage, setIsArmyStage] = useState<boolean>();
   const [armyPosition, setArmyPosition] = useState<any>();
+  const [numberOfArmy, setNumberOfArmy] = useState<any>();
 
   useEffect(() => {
     saveTerrain();
@@ -112,7 +117,9 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     isArmyStage,
     setIsArmyStage,
     armyPosition,
-    setArmyPosition
+    setArmyPosition,
+    numberOfArmy,
+    setNumberOfArmy
   };
 
   return (

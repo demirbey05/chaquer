@@ -28,13 +28,13 @@ function ArmySettleModal() {
 
     if (
       parseInt(swordsmanCount) +
-        parseInt(archerCount) +
-        parseInt(cavalryCount) <=
-        100 &&
+      parseInt(archerCount) +
+      parseInt(cavalryCount) <=
+      100 &&
       parseInt(swordsmanCount) +
-        parseInt(archerCount) +
-        parseInt(cavalryCount) >
-        0
+      parseInt(archerCount) +
+      parseInt(cavalryCount) >
+      0
     ) {
       setIsDisabled(false);
     } else {
@@ -59,9 +59,9 @@ function ArmySettleModal() {
     );
     if (tx) {
       // await tx
+      await tx.wait(1);
       setIsArmySettled(true);
       setIsArmyStage(false);
-      await tx.wait(1);
     }
   };
 
