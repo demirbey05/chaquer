@@ -43,8 +43,6 @@ function ArmySettleModal() {
   }, [swordsmanCount, archerCount, cavalryCount]);
 
   const handleClick = async () => {
-    // Transaction sonrası eğer transaction başarılı ise !!!! setIsArmyStage(false) ve setArmyIsSettled(true) yaparsın.
-
     const tx = await systems["system.ArmySettle"].execute(
       abiCoder.encode(
         ["uint32", "uint32", "uint32", "uint32", "uint32"],

@@ -14,22 +14,18 @@ export function useUserArmy(address: any) {
   // Transform army positions and store in separate state
   const [armyPositions, setArmyPositions] = useState<any[]>([]);
   const [userArmyNumber, setUserArmyNumber] = useState<number>(0);
-  const [armyConfigs, setArmyConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    const positions = armyEntities.map((entityIndex) =>
-      getComponentValue(components.Position, entityIndex)
-    );
-
-    const configs = armyEntities.map((entityIndex) =>
-      getComponentValue(components.ArmyConfig, entityIndex)
-    );
+    const positions = armyEntities.map((entityIndex) => {
+      const position = getComponentValue(components.Position, entityIndex);
+      const armyConfig = getComponentValue(components.ArmyConfig, entityIndex);
+      return { position, armyConfig };
+    });
 
     setArmyPositions(positions);
     setUserArmyNumber(positions.length);
-    setArmyConfigs(configs);
   }, [armyEntities]);
 
   // Return transformed army positions
-  return [armyPositions, userArmyNumber, armyConfigs];
+  return [armyPositions, userArmyNumber];
 }

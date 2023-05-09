@@ -31,6 +31,14 @@ type TerrainContextType = {
   armyPosition: { x: any; y: any };
   numberOfArmy: any;
   setNumberOfArmy: (value: any) => void;
+  fromArmyPosition: { x: any; y: any } | undefined;
+  setFromArmyPosition: (value: { x: any; y: any } | undefined) => void;
+  toArmyPosition: { x: any; y: any } | undefined;
+  setToArmyPosition: (value: { x: any; y: any } | undefined) => void;
+  movingArmyId: any;
+  setMovingArmyId: (value: any) => void;
+  isArmyMoveStage: boolean;
+  setIsArmyMoveStage: (value: boolean) => void;
 };
 
 const TerrainContext = createContext<TerrainContextType>({
@@ -57,7 +65,15 @@ const TerrainContext = createContext<TerrainContextType>({
   setArmyPosition: () => { },
   armyPosition: { x: null, y: null },
   numberOfArmy: null,
-  setNumberOfArmy: () => { }
+  setNumberOfArmy: () => { },
+  fromArmyPosition: { x: null, y: null },
+  setFromArmyPosition: () => { },
+  toArmyPosition: { x: null, y: null },
+  setToArmyPosition: () => { },
+  movingArmyId: null,
+  setMovingArmyId: () => { },
+  isArmyMoveStage: false,
+  setIsArmyMoveStage: () => { }
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -71,13 +87,20 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
   const [permArray, setPermArray] = useState<any>(null);
   const [refresh, setRefresh] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
   const [castle, setCastle] = useState<any>();
   const [tempCastle, setTempCastle] = useState<any>();
+
   const [isArmySettled, setIsArmySettled] = useState<boolean>();
   const [isArmyStage, setIsArmyStage] = useState<boolean>();
   const [armyPosition, setArmyPosition] = useState<any>();
   const [numberOfArmy, setNumberOfArmy] = useState<any>();
+
+  const [fromArmyPosition, setFromArmyPosition] = useState<any>();
+  const [toArmyPosition, setToArmyPosition] = useState<any>();
+  const [movingArmyId, setMovingArmyId] = useState<any>();
+  const [isArmyMoveStage, setIsArmyMoveStage] = useState<any>();
 
   useEffect(() => {
     saveTerrain();
@@ -119,7 +142,15 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     armyPosition,
     setArmyPosition,
     numberOfArmy,
-    setNumberOfArmy
+    setNumberOfArmy,
+    fromArmyPosition,
+    setFromArmyPosition,
+    toArmyPosition,
+    setToArmyPosition,
+    movingArmyId,
+    setMovingArmyId,
+    isArmyMoveStage,
+    setIsArmyMoveStage
   };
 
   return (

@@ -1,9 +1,12 @@
 import { useEffect } from 'react'
 import "../../styles/globals.css";
 import { useTerrain } from '../../context/TerrainContext';
+import { getBurnerWallet } from "../../mud/getBurnerWallet";
+import { useUserArmy } from '../../hooks/useUserArmy';
 
 function ArmyProgressComp() {
     const { numberOfArmy } = useTerrain();
+    const myArmyPosition: any = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
 
     useEffect(() => {
         if (numberOfArmy === 1) {
