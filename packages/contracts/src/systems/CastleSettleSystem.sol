@@ -39,7 +39,7 @@ contract CastleSettleSystem is System {
       revert CastleSettle__TileIsNotEmpty();
     }
     // The terrain type is not land
-    if (terrainComponent.getTerrain(y * 50 + x) != hex"01") {
+    if (terrainComponent.getTerrain(x * 50 + y) != hex"01") {
       revert CastleSettle__WrongTerrainType();
     }
     // You can only have one castle

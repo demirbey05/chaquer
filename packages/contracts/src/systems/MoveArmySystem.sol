@@ -32,7 +32,7 @@ contract MoveArmySystem is System {
     if (armyOwnable.getValue(armyOneID) != msg.sender) {
       revert MoveArmy__NoAuthorized();
     }
-    if (terrainComponent.getTerrain(target.y * 50 + target.x) != hex"01") {
+    if (terrainComponent.getTerrain(target.x * 50 + target.y) != hex"01") {
       revert MoveArmy__WrongTerrainType();
     }
     if (LibMath.manhattan(target, position.getValue(armyOneID)) > 3) {

@@ -38,7 +38,7 @@ contract ArmySettleSystem is System {
     if (!(coord.x < 50 && coord.y < 50 && coord.x >= 0 && coord.y >= 0)) {
       revert ArmySettle__CoordinatesOutOfBound();
     }
-    if (terrainComponent.getTerrain(coord.y * 50 + coord.x) != hex"01") {
+    if (terrainComponent.getTerrain(coord.x * 50 + coord.y) != hex"01") {
       revert ArmySettle__WrongTerrainType();
     }
     // If there is an another entity at that coordinate
