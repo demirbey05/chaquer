@@ -12,7 +12,7 @@ contract InitSystem is System {
 
   function execute(bytes memory terrain) public returns (bytes memory) {
     MapConfigComponent terrainComponent = MapConfigComponent(getAddressById(components, MapConfigComponentID));
-    if ((terrainComponent.getTerrainLength()) == 10000) {
+    if ((terrainComponent.getTerrainLength()) == 2500) {
       return new bytes(0);
     }
     terrainComponent.set(terrain);

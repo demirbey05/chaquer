@@ -35,10 +35,10 @@ contract ArmySettleSystem is System {
     address ownerCandidate = msg.sender;
 
     // Coordinates is out of bound
-    if (!(coord.x < 100 && coord.y < 100 && coord.x >= 0 && coord.y >= 0)) {
+    if (!(coord.x < 50 && coord.y < 50 && coord.x >= 0 && coord.y >= 0)) {
       revert ArmySettle__CoordinatesOutOfBound();
     }
-    if (terrainComponent.getTerrain(coord.y * 100 + coord.x) != hex"01") {
+    if (terrainComponent.getTerrain(coord.y * 50 + coord.x) != hex"01") {
       revert ArmySettle__WrongTerrainType();
     }
     // If there is an another entity at that coordinate

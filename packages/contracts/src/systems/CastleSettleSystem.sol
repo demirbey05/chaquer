@@ -27,11 +27,11 @@ contract CastleSettleSystem is System {
     // Checks
     // Map is not initialized
     //@dev Maybe we can define another component for width and height
-    if ((terrainComponent.getTerrainLength()) != 10000) {
+    if ((terrainComponent.getTerrainLength()) != 2500) {
       revert CastleSettle__MapIsNotReady();
     }
     // Coordinates is out of bound
-    if (!(x < 100 && y < 100 && x >= 0 && y >= 0)) {
+    if (!(x < 50 && y < 50 && x >= 0 && y >= 0)) {
       revert CastleSettle__CoordinatesOutOfBound();
     }
     // If there is an another entity at that coordinate
@@ -39,7 +39,7 @@ contract CastleSettleSystem is System {
       revert CastleSettle__TileIsNotEmpty();
     }
     // The terrain type is not land
-    if (terrainComponent.getTerrain(y * 100 + x) != hex"01") {
+    if (terrainComponent.getTerrain(y * 50 + x) != hex"01") {
       revert CastleSettle__WrongTerrainType();
     }
     // You can only have one castle
