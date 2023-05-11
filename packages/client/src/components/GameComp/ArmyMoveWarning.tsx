@@ -8,13 +8,13 @@ function ArmyWarning() {
                     color: "white",
                     left: "0",
                     right: "0",
-                    top: "0",
-                    margin: "125px auto",
+                    bottom: "0",
+                    margin: "50px auto",
                     width: "600px",
                 }}
             >
                 <h2 className="text-center text-3xl text-white mb-2 border-top border-bottom font-bold">
-                    Please move your army
+                    Click blue tiles to move your army
                 </h2>
             </div>
         </>

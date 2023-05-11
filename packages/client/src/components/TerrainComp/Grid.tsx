@@ -13,6 +13,7 @@ import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddre
 import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 import { useArmyPositions } from "../../hooks/useArmyPositions";
 import { useUserArmy } from "../../hooks/useUserArmy";
+import ArmyInfoPopover from "../GameComp/ArmyInfoPopover";
 
 export type DataProp = {
   width: number;
@@ -175,6 +176,7 @@ export function Grid(data: DataProp) {
       myArmyPosition.map((data: any) => {
         const element = document.getElementById(`${data.position.y}${data.position.x}`)!;
         element.style.border = "2px solid rgb(245, 169, 6)";
+        element.classList.add("popover-trigger");
       });
     }
 
@@ -217,7 +219,7 @@ export function Grid(data: DataProp) {
   }, [isArmyStage])
 
   return (
-    <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`}>
+    <div className={`inline-grid ${data.isBorder && "border-4 border-black"} popover-container`}>
       {rows.map((row) => {
         return columns.map((column) => {
           return (
