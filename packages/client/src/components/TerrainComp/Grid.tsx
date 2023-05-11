@@ -6,13 +6,16 @@ import { useTerrain } from "../../context/TerrainContext";
 import "../../styles/globals.css";
 import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
 import { useCastlePositions } from "../../hooks/useCastlePositions";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useBurnerWallets } from "../../hooks/useBurnerWallets";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 import { useArmyPositions } from "../../hooks/useArmyPositions";
 import { useUserArmy } from "../../hooks/useUserArmy";
+import { getComponentEntities, getComponentValue } from "@latticexyz/recs";
+import { useMUD } from "../../MUDContext";
+import { utils } from "ethers";
 
 export type DataProp = {
   width: number;
@@ -102,6 +105,8 @@ export function Grid(data: DataProp) {
   const values = data.values;
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
+  const { components, systems, world } = useMUD();
+  const { current: abiCoder } = useRef(new utils.AbiCoder());
 
   const {
     setMovingArmyId,
@@ -164,15 +169,38 @@ export function Grid(data: DataProp) {
       )
     ) {
       setToArmyPosition({ x: getDataAtrX(e), y: getDataAtrY(e) });
-      setMovingArmyId(
-        getMovingArmyId({ x: fromArmyPosition.x, y: fromArmyPosition.y })
-      ); // Mock data
-      setIsArmyMoveStage(false);
+      for (const entity of getComponentEntities(components.Position)) {
+        const val: any = getComponentValue(components.Position, entity);
+        if (val.x == fromArmyPosition.x && val.y == fromArmyPosition.y) {
+          world.entityToIndex.forEach((value, key) => {
+            if (value == entity) {
+              setMovingArmyId(key);
+            }
+          });
+        }
+      }
+
       if (isArmyMoveStage) {
-        console.log("x");
-        console.log(fromArmyPosition.x);
-        console.log(fromArmyPosition.y);
-        // toArmyPosition, movingArmyId kullanrak istek atabilirisin
+        try {
+          systems["system.MoveArmy"].execute(
+            abiCoder.encode(
+              ["uint256", "uint32", "uint32"],
+              [movingArmyId, toArmyPosition?.x, toArmyPosition?.y]
+            )
+          );
+
+          document.getElementById(
+            `${fromArmyPosition.y}${fromArmyPosition.x}`
+          )!.innerHTML = "";
+          document.getElementById(
+            `${fromArmyPosition.y}${fromArmyPosition.x}`
+          )!.style.border = "";
+          setIsArmyMoveStage(false);
+          setFromArmyPosition(undefined);
+          setToArmyPosition(undefined);
+        } catch (err) {
+          console.log(err);
+        }
       }
     } else {
       setFromArmyPosition(undefined);

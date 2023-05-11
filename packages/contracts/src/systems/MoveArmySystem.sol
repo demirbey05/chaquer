@@ -35,7 +35,7 @@ contract MoveArmySystem is System {
     if (terrainComponent.getTerrain(target.y * 100 + target.x) != hex"01") {
       revert MoveArmy__WrongTerrainType();
     }
-    if (LibMath.manhattan(target, position.getValue(armyOneID)) >= 3) {
+    if (LibMath.manhattan(target, position.getValue(armyOneID)) > 3) {
       revert MoveArmy__TooFar();
     }
     if (position.getEntitiesWithValue(target).length != 0) {

@@ -1,5 +1,5 @@
 import { useMUD } from "../MUDContext";
-import { useEntityQuery } from "@latticexyz/react";
+import { useEntityQuery, useObservableValue } from "@latticexyz/react";
 import { Has, getComponentValue } from "@latticexyz/recs";
 import { useState, useEffect } from "react";
 
@@ -8,6 +8,7 @@ export function useArmyPositions() {
 
   // Get Army entities
   const armyEntities = useEntityQuery([Has(components.ArmyOwnable)]);
+  const value = useObservableValue(components.Position.update$);
 
   // Transform army positions and store in separate state
   const [armyPositions, setArmyPositions] = useState<any[]>([]);
@@ -18,8 +19,9 @@ export function useArmyPositions() {
     );
 
     setArmyPositions(positions);
-  }, [armyEntities]);
+  }, [armyEntities, value]);
 
   // Return transformed army positions
+
   return armyPositions;
 }
