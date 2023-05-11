@@ -81,8 +81,8 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
 }: {
   children: ReactNode;
 }) => {
-  const width = 100;
-  const height = 100;
+  const width = 50;
+  const height = 50;
   const [values, setValues] = useState<any>(null);
   const [permArray, setPermArray] = useState<any>(null);
   const [refresh, setRefresh] = useState<number>(0);

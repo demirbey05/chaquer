@@ -306,47 +306,42 @@ export function Grid(data: DataProp) {
                 handleClick(e);
               }}
               className={`
-                ${
-                  !data.isBorder &&
-                  canCastleBeSettle(values[row][column]) &&
-                  "borderHover"
+                ${!data.isBorder &&
+                canCastleBeSettle(values[row][column]) &&
+                "borderHover"
                 }`}
-              data-bs-toggle={`${
-                canCastleBeSettle(values[row][column]) &&
-                !isCastleSettled &&
-                !data.isBorder
+              data-bs-toggle={`${canCastleBeSettle(values[row][column]) &&
+                  !isCastleSettled &&
+                  !data.isBorder
                   ? "modal"
                   : ""
-              }${
-                canCastleBeSettle(values[row][column]) &&
-                isCastleSettled &&
-                !data.isBorder &&
-                isArmyStage &&
-                numberOfArmy !== 3 &&
-                canArmyBeSettle(myCastlePosition).some(
-                  (item) => item.x === column && item.y === row
-                )
+                }${canCastleBeSettle(values[row][column]) &&
+                  isCastleSettled &&
+                  !data.isBorder &&
+                  isArmyStage &&
+                  numberOfArmy !== 3 &&
+                  canArmyBeSettle(myCastlePosition).some(
+                    (item) => item.x === column && item.y === row
+                  )
                   ? "modal"
                   : ""
-              }`}
-              data-bs-target={`${
-                canCastleBeSettle(values[row][column]) &&
-                !isCastleSettled &&
-                !data.isBorder
+                }`}
+              data-bs-target={`${canCastleBeSettle(values[row][column]) &&
+                  !isCastleSettled &&
+                  !data.isBorder
                   ? "#castleSettleModal"
                   : ""
-              }${
-                canCastleBeSettle(values[row][column]) &&
-                isCastleSettled &&
-                !data.isBorder &&
-                isArmyStage &&
-                numberOfArmy !== 3 &&
-                canArmyBeSettle(myCastlePosition).some(
-                  (item) => item.x === column && item.y === row
-                )
+                }${canCastleBeSettle(values[row][column]) &&
+                  isCastleSettled &&
+                  !data.isBorder &&
+                  isArmyStage &&
+                  numberOfArmy !== 3 &&
+                  canArmyBeSettle(myCastlePosition).some(
+                    (item) => item.x === column && item.y === row
+                  )
                   ? "#armySettleModal"
                   : ""
-              }`}
+                }`}
             ></div>
           );
         });

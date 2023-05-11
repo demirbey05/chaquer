@@ -11,7 +11,7 @@ function Game() {
   const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage } = useTerrain();
   const values = map;
 
-  const terrainStyles = [0, 25];
+  const terrainStyles = [0, 35];
 
   return (
     <div>

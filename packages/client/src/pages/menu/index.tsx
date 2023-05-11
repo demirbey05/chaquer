@@ -52,7 +52,7 @@ function Menu() {
     const tc = await tx.wait();
   };
 
-  const terrainStyles = [8, 7];
+  const terrainStyles = [8, 14];
   const values = map;
 
   return (
