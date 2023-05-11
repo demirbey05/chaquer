@@ -82,6 +82,16 @@ contract CaptureSystem is System {
     if (result == 1) {
       castleOwnable.set(castleID, armyOwner);
       console.log("Siege is successful");
+
+      // Destroy all the army which belongs to castle owner
+
+      uint256[] memory castleOwnerArmies = armyOwnable.getEntitiesWithValue(castleOwner);
+
+      for (uint i = 0; i < castleOwnerArmies.length; i++) {
+        armyOwnable.remove(castleOwnerArmies[i]);
+        armyConfig.remove(castleOwnerArmies[i]);
+      }
+
       return abi.encode(1);
     } else if (result == 0) {
       return abi.encode(0);

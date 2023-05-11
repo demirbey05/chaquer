@@ -235,4 +235,24 @@ contract CaptureTest is MudTest {
     assertEq(1, abi.decode(data, (uint)));
     vm.stopPrank();
   }
+
+  function testSiegeWithAwayedArmy() public {
+    uint256 armyID = deployArmy(bob, 36, 36, 67, 26, 6); // Castle at 35,36
+    uint256 castleID = deployCastle(alice, 36, 37);
+    uint256 moveArmyID = deployArmyWithoutCastle(alice, 35, 37, 50, 19, 14);
+    vm.startPrank(alice);
+    moveArmy.execute(abi.encode(moveArmyID, 35, 39));
+    moveArmy.execute(abi.encode(moveArmyID, 35, 41));
+    moveArmy.execute(abi.encode(moveArmyID, 35, 43));
+    vm.stopPrank();
+    uint256[] memory aliceArmiesBefore = armyOwnable.getEntitiesWithValue(alice);
+    assertEq(1, aliceArmiesBefore.length);
+
+    vm.startPrank(bob);
+    bytes memory data = captureSystem.execute(abi.encode(castleID, armyID));
+    assertEq(1, abi.decode(data, (uint)));
+    vm.stopPrank();
+    uint256[] memory aliceArmiesAfter = armyOwnable.getEntitiesWithValue(alice);
+    assertEq(0, aliceArmiesAfter.length);
+  }
 }
