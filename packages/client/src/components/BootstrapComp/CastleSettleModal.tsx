@@ -8,10 +8,6 @@ function CastleSettleModal() {
   const { systems } = useMUD();
 
   const handleClick = async () => {
-    console.log("x");
-    console.log(tempCastle.x);
-    console.log("y");
-    console.log(tempCastle.y);
     const tx =
       !isCastleSettled &&
       (await systems["system.CastleSettle"].executeTyped(
