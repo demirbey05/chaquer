@@ -125,19 +125,13 @@ export function Grid(data: DataProp) {
 
   const castlePositions = useCastlePositions();
   const burnerWallets = useBurnerWallets();
-  const myCastlePosition = useCastlePositionByAddress(
-    getBurnerWallet().address.toLocaleLowerCase()
-  );
+  const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
   const armyPositions: any = useArmyPositions();
-  const myArmyPosition: any = useUserArmy(
-    getBurnerWallet().address.toLocaleLowerCase()
-  )[0];
-  const myArmyNumber = useUserArmy(
-    getBurnerWallet().address.toLocaleLowerCase()
-  )[1];
+  const myArmyPosition: any = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
+  const myArmyNumber = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[1];
 
   // Handle Clicks
-  const handleClick = (e: any) => {
+  const handleClick = async (e: any) => {
     if (!isCastleSettled) {
       setTempCastle({ x: getDataAtrX(e), y: getDataAtrY(e) });
     }
@@ -146,24 +140,17 @@ export function Grid(data: DataProp) {
       setArmyPosition({ x: getDataAtrX(e), y: getDataAtrY(e) });
     }
 
-    if (
-      !fromArmyPosition &&
-      isCastleSettled &&
-      !isArmyStage &&
-      myArmyPosition &&
-      isMyArmy({ x: getDataAtrX(e), y: getDataAtrY(e) }, myArmyPosition)
-    ) {
+    if (!fromArmyPosition && isCastleSettled && !isArmyStage && myArmyPosition && isMyArmy({ x: getDataAtrX(e), y: getDataAtrY(e) }, myArmyPosition)) {
       setFromArmyPosition({ x: getDataAtrX(e), y: getDataAtrY(e) });
       setTempArmyPos({ x: getDataAtrX(e), y: getDataAtrY(e) });
       setIsArmyMoveStage(true);
     } else if (
       fromArmyPosition &&
-      canArmyBeSettle(fromArmyPosition).some(
+      canArmyBeSettle({ x: parseInt(fromArmyPosition.x), y: parseInt(fromArmyPosition.y) }).some(
         (item) =>
           item.x.toString() === getDataAtrX(e) &&
           item.y.toString() === getDataAtrY(e)
-      )
-    ) {
+      )) {
       setToArmyPosition({ x: getDataAtrX(e), y: getDataAtrY(e) });
       if (canCastleBeSettle(values[toArmyPosition?.x][toArmyPosition?.y])) {
         for (const entity of getComponentEntities(components.Position)) {
@@ -179,19 +166,15 @@ export function Grid(data: DataProp) {
 
         if (isArmyMoveStage) {
           try {
-            systems["system.MoveArmy"].execute(
+            await systems["system.MoveArmy"].execute(
               abiCoder.encode(
                 ["uint256", "uint32", "uint32"],
                 [movingArmyId, toArmyPosition?.x, toArmyPosition?.y]
               )
             );
 
-            document.getElementById(
-              `${fromArmyPosition.y},${fromArmyPosition.x}`
-            )!.innerHTML = "";
-            document.getElementById(
-              `${fromArmyPosition.y},${fromArmyPosition.x}`
-            )!.style.border = "";
+            document.getElementById(`${fromArmyPosition.y},${fromArmyPosition.x}`)!.innerHTML = "";
+            document.getElementById(`${fromArmyPosition.y},${fromArmyPosition.x}`)!.style.border = "";
 
             setIsArmyMoveStage(false);
             setFromArmyPosition(undefined);
@@ -201,8 +184,10 @@ export function Grid(data: DataProp) {
           }
         }
       }
-    } else {
+    }
+    else {
       setFromArmyPosition(undefined);
+      setToArmyPosition(undefined);
       setIsArmyMoveStage(false);
     }
   };
@@ -237,9 +222,7 @@ export function Grid(data: DataProp) {
     //Makes castle position unClickable to not cause bug during army settlement
     if (castlePositions) {
       castlePositions.map((data) => {
-        document
-          .getElementById(`${data.y},${data.x}`)!
-          .setAttribute("data-bs-toggle", "");
+        document.getElementById(`${data.y},${data.x}`)!.setAttribute("data-bs-toggle", "");
       });
     }
   }, [isArmyStage]);
@@ -277,7 +260,8 @@ export function Grid(data: DataProp) {
             .getElementById(`${data.y},${data.x}`)
             ?.classList.add("borderHoverMove");
       });
-    } else {
+    }
+    else {
       if (tempArmyPos) {
         canArmyBeSettle({
           x: parseInt(tempArmyPos.x),
@@ -300,7 +284,8 @@ export function Grid(data: DataProp) {
           .getElementById(`${data.y},${data.x}`)
           ?.classList.add("borderHoverArmy")
       );
-    } else if (!isArmyStage && myCastlePosition) {
+    }
+    else if (!isArmyStage && myCastlePosition) {
       canArmyBeSettle(myCastlePosition).map((data: any) =>
         document
           .getElementById(`${data.y},${data.x}`)
@@ -308,6 +293,9 @@ export function Grid(data: DataProp) {
       );
     }
   }, [isArmyStage]);
+
+  console.log(fromArmyPosition)
+  console.log(toArmyPosition)
 
   return (
     <div className={`inline-grid ${data.isBorder && "border-4 border-black"}`}>
@@ -335,47 +323,42 @@ export function Grid(data: DataProp) {
                 handleClick(e);
               }}
               className={`
-                ${
-                  !data.isBorder &&
-                  canCastleBeSettle(values[row][column]) &&
-                  "borderHover"
+                ${!data.isBorder &&
+                canCastleBeSettle(values[row][column]) &&
+                "borderHover"
                 }`}
-              data-bs-toggle={`${
-                canCastleBeSettle(values[row][column]) &&
+              data-bs-toggle={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
                 !data.isBorder
+                ? "modal"
+                : ""
+                }${canCastleBeSettle(values[row][column]) &&
+                  isCastleSettled &&
+                  !data.isBorder &&
+                  isArmyStage &&
+                  numberOfArmy !== 3 &&
+                  canArmyBeSettle(myCastlePosition).some(
+                    (item) => item.x === row && item.y === column
+                  )
                   ? "modal"
                   : ""
-              }${
-                canCastleBeSettle(values[row][column]) &&
-                isCastleSettled &&
-                !data.isBorder &&
-                isArmyStage &&
-                numberOfArmy !== 3 &&
-                canArmyBeSettle(myCastlePosition).some(
-                  (item) => item.x === row && item.y === column
-                )
-                  ? "modal"
-                  : ""
-              }`}
-              data-bs-target={`${
-                canCastleBeSettle(values[row][column]) &&
+                }`}
+              data-bs-target={`${canCastleBeSettle(values[row][column]) &&
                 !isCastleSettled &&
                 !data.isBorder
-                  ? "#castleSettleModal"
-                  : ""
-              }${
-                canCastleBeSettle(values[row][column]) &&
-                isCastleSettled &&
-                !data.isBorder &&
-                isArmyStage &&
-                numberOfArmy !== 3 &&
-                canArmyBeSettle(myCastlePosition).some(
-                  (item) => item.x === row && item.y === column
-                )
+                ? "#castleSettleModal"
+                : ""
+                }${canCastleBeSettle(values[row][column]) &&
+                  isCastleSettled &&
+                  !data.isBorder &&
+                  isArmyStage &&
+                  numberOfArmy !== 3 &&
+                  canArmyBeSettle(myCastlePosition).some(
+                    (item) => item.x === row && item.y === column
+                  )
                   ? "#armySettleModal"
                   : ""
-              }`}
+                }`}
             ></div>
           );
         });

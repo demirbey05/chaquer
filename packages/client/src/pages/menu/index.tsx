@@ -8,12 +8,11 @@ import { useTerrain } from "../../context/TerrainContext.js";
 import map from "../../../map.json";
 import dungeonImg from "../../images/dungeon.png";
 import castleImg from "../../images/castle.png";
+import chaquerImg from '../../images/chaquer_bg.png';
 import { Link } from "react-router-dom";
 import { useMUD } from "../../MUDContext";
 import { flatten2D } from "../../utils/terrainArray";
 import { ethers, Contract } from "ethers";
-import { getContractAddress } from "../../utils/getContractAddress";
-import { config } from "../../mud/config";
 import { useComponentValue } from "@latticexyz/react";
 
 function Menu() {
@@ -58,7 +57,7 @@ function Menu() {
   return (
     <div
       style={{
-        backgroundImage: `url(${dungeonImg})`,
+        backgroundImage: `url(${chaquerImg})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
@@ -84,7 +83,7 @@ function Menu() {
               )}
             </>
           )}
-          <div className="col align-items-center justify-content-center">
+          <div className="col-4 align-items-center justify-content-center">
             <h2 className="text-center text-white mb-5 display-4 border-top border-bottom font-bold">
               Chaquer
             </h2>
