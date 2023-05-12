@@ -22,7 +22,7 @@ type TerrainContextType = {
   setCastle: (value: { x: number; y: number }) => void;
   castle: { x: any; y: any };
   setTempCastle: (value: { x: number; y: number }) => void;
-  tempCastle: { x: any, y: any };
+  tempCastle: { x: any; y: any };
   isArmySettled: boolean | undefined;
   setIsArmySettled: (value: boolean) => void;
   isArmyStage: boolean | undefined;
@@ -33,47 +33,43 @@ type TerrainContextType = {
   setNumberOfArmy: (value: any) => void;
   fromArmyPosition: { x: any; y: any } | undefined;
   setFromArmyPosition: (value: { x: any; y: any } | undefined) => void;
-  toArmyPosition: { x: any; y: any } | undefined;
-  setToArmyPosition: (value: { x: any; y: any } | undefined) => void;
-  movingArmyId: any;
-  setMovingArmyId: (value: any) => void;
   isArmyMoveStage: boolean;
   setIsArmyMoveStage: (value: boolean) => void;
 };
 
 const TerrainContext = createContext<TerrainContextType>({
   values: null,
-  setIsLoading: () => { },
+  setIsLoading: () => {},
   width: 100,
   height: 100,
-  setValues: () => { },
-  setRefresh: () => { },
+  setValues: () => {},
+  setRefresh: () => {},
   refresh: 0,
   isLoading: false,
-  setPermArray: () => { },
-  saveTerrain: () => { },
+  setPermArray: () => {},
+  saveTerrain: () => {},
   isCastleSettled: false,
-  setIsCastleSettled: () => { },
-  setCastle: () => { },
+  setIsCastleSettled: () => {},
+  setCastle: () => {},
   castle: { x: null, y: null },
-  setTempCastle: () => { },
+  setTempCastle: () => {},
   tempCastle: { x: null, y: null },
   isArmySettled: false,
-  setIsArmySettled: () => { },
+  setIsArmySettled: () => {},
   isArmyStage: false,
-  setIsArmyStage: () => { },
-  setArmyPosition: () => { },
+  setIsArmyStage: () => {},
+  setArmyPosition: () => {},
   armyPosition: { x: null, y: null },
   numberOfArmy: null,
-  setNumberOfArmy: () => { },
+  setNumberOfArmy: () => {},
   fromArmyPosition: { x: null, y: null },
-  setFromArmyPosition: () => { },
+  setFromArmyPosition: () => {},
   toArmyPosition: { x: null, y: null },
-  setToArmyPosition: () => { },
+  setToArmyPosition: () => {},
   movingArmyId: null,
-  setMovingArmyId: () => { },
+  setMovingArmyId: () => {},
   isArmyMoveStage: false,
-  setIsArmyMoveStage: () => { }
+  setIsArmyMoveStage: () => {},
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -150,7 +146,7 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     movingArmyId,
     setMovingArmyId,
     isArmyMoveStage,
-    setIsArmyMoveStage
+    setIsArmyMoveStage,
   };
 
   return (
