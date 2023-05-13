@@ -379,7 +379,9 @@ export function Grid(data: DataProp) {
         y: parseInt(fromArmyPosition.y),
       }).map((data: any) => {
         canCastleBeSettle(values[data.x][data.y]) &&
-          document.getElementById(`${data.y},${data.x}`)?.classList.add("borderHoverMove");
+          document
+            .getElementById(`${data.y},${data.x}`)
+            ?.classList.add("borderHoverMove");
       });
     } else {
       if (tempArmyPos) {
@@ -388,7 +390,9 @@ export function Grid(data: DataProp) {
           y: parseInt(tempArmyPos.y),
         }).map((data: any) => {
           canCastleBeSettle(values[data.x][data.y]) &&
-            document.getElementById(`${data.y},${data.x}`)?.classList.remove("borderHoverMove");
+            document
+              .getElementById(`${data.y},${data.x}`)
+              ?.classList.remove("borderHoverMove");
         });
       }
     }
