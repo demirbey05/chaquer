@@ -12,16 +12,20 @@ export function useArmyPositions() {
 
   // Transform army positions and store in separate state
   const [armyPositions, setArmyPositions] = useState<any[]>([]);
+  const [armyConfig, setArmyConfig] = useState<any>(0);
 
   useEffect(() => {
-    const positions = armyEntities.map((entityIndex) =>
-      getComponentValue(components.Position, entityIndex)
-    );
+    const positions = armyEntities.map((entityIndex) => {
+      const position = getComponentValue(components.Position, entityIndex);
+      const armyConfig = getComponentValue(components.ArmyConfig, entityIndex);
+      return { position, armyConfig };
+    });
 
     setArmyPositions(positions);
+    setArmyConfig(armyConfig)
   }, [armyEntities, value]);
 
   // Return transformed army positions
 
-  return armyPositions;
+  return [armyPositions, armyConfig];
 }

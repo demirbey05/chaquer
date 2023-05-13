@@ -84,7 +84,7 @@ function ArmySettleModal() {
                 <div className="row border-bottom">
                   <p>
                     Please determine the number of warriors that will hold in
-                    the army.
+                    the army. You can deploy maximum 100 army in the total.
                   </p>
                 </div>
                 <div className="row mt-2">
