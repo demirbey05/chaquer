@@ -378,10 +378,12 @@ export function Grid(data: DataProp) {
         x: parseInt(fromArmyPosition.x),
         y: parseInt(fromArmyPosition.y),
       }).map((data: any) => {
-        canCastleBeSettle(values[data.x][data.y]) &&
-          document
-            .getElementById(`${data.y},${data.x}`)
-            ?.classList.add("borderHoverMove");
+        if (data.x >= 0 && data.y >= 0 && data.x < 50 && data.y < 50) {
+          canCastleBeSettle(values[data.x][data.y]) &&
+            document
+              .getElementById(`${data.y},${data.x}`)
+              ?.classList.add("borderHoverMove");
+        }
       });
     } else {
       if (tempArmyPos) {
@@ -389,10 +391,12 @@ export function Grid(data: DataProp) {
           x: parseInt(tempArmyPos.x),
           y: parseInt(tempArmyPos.y),
         }).map((data: any) => {
-          canCastleBeSettle(values[data.x][data.y]) &&
-            document
-              .getElementById(`${data.y},${data.x}`)
-              ?.classList.remove("borderHoverMove");
+          if (data.x >= 0 && data.y >= 0 && data.x < 50 && data.y < 50) {
+            canCastleBeSettle(values[data.x][data.y]) &&
+              document
+                .getElementById(`${data.y},${data.x}`)
+                ?.classList.remove("borderHoverMove");
+          }
         });
       }
     }
