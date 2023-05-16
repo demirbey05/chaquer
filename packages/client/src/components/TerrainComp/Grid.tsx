@@ -11,7 +11,7 @@ import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 import { useArmyPositions } from "../../hooks/useArmyPositions";
-import { useUserArmy } from "../../hooks/useUserArmy";
+import { useMyArmy } from "../../hooks/useMyArmy";
 import { EntityID } from "@latticexyz/recs";
 import { useMUD } from "../../MUDContext";
 import AttackModal from "../BootstrapComp/ArmyAttackModal";
@@ -216,10 +216,10 @@ export function Grid(data: DataProp) {
     getBurnerWallet().address.toLocaleLowerCase()
   );
   const armyPositions: any = useArmyPositions()[0];
-  const myArmyPosition: any = useUserArmy(
+  const myArmyPosition: any = useMyArmy(
     getBurnerWallet().address.toLocaleLowerCase()
   )[0];
-  const myArmyNumber = useUserArmy(
+  const myArmyNumber = useMyArmy(
     getBurnerWallet().address.toLocaleLowerCase()
   )[1];
 
@@ -469,8 +469,6 @@ export function Grid(data: DataProp) {
       });
     };
 
-
-
     if (myArmyPosition) {
       // Clear the board before redeploying army emojis
       clearBoard();
@@ -500,7 +498,7 @@ export function Grid(data: DataProp) {
   // Handle Army and Castle Attack OffCanvas
   useEffect(() => {
     armyPositions.map((data: any) => {
-      if (isAttackStage && fromArmyPositionRef.current) {
+      if (isAttackStage) {
         canArmyBeSettle({ x: parseInt(fromArmyPositionRef.current.x), y: parseInt(fromArmyPositionRef.current.y) }) &&
           !isMyArmy({ x: data.position.x, y: data.position.y }, myArmyPosition) &&
           document.getElementById(`${data.position.y},${data.position.x}`)!.setAttribute("data-bs-toggle", "offcanvas");
@@ -534,7 +532,7 @@ export function Grid(data: DataProp) {
     });
 
     castlePositions.map((data: any) => {
-      if (isAttackStage && fromArmyPositionRef.current) {
+      if (isAttackStage) {
         canArmyBeSettle({
           x: parseInt(fromArmyPositionRef.current.x),
           y: parseInt(fromArmyPositionRef.current.y),
@@ -560,6 +558,15 @@ export function Grid(data: DataProp) {
             .getElementById(`${data.y},${data.x}`)!
             .setAttribute("data-bs-target", "#offcanvasBottomCastle");
       } else if (attackFromArmyPosition) {
+        console.log(canArmyBeSettle({
+          x: attackFromArmyPosition.x,
+          y: attackFromArmyPosition.y,
+        }) &&
+          isEnemyCastle(
+            { x: data.x, y: data.y },
+            myCastlePosition,
+            castlePositions
+          ))
         canArmyBeSettle({
           x: attackFromArmyPosition.x,
           y: attackFromArmyPosition.y,

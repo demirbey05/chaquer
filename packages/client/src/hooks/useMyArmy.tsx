@@ -3,7 +3,7 @@ import { useEntityQuery, useObservableValue } from "@latticexyz/react";
 import { getComponentValue, HasValue, Type } from "@latticexyz/recs";
 import { useState, useEffect, useRef } from "react";
 
-export function useUserArmy(address: any) {
+export function useMyArmy(address: any) {
   const { components } = useMUD();
 
   // Get Army entities

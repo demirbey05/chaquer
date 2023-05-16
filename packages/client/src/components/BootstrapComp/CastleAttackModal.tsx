@@ -48,6 +48,9 @@ function CastleAttackModal() {
         [attackToCastleId, attackFromArmyId]
       )
     );
+    setIsAttackStage(false);
+    setMyArmyConfig(undefined);
+    setEnemyArmyConfig(undefined);
     let winner: number = -1;
     const tc = await tx.wait();
     tc.logs.forEach((value: any) => {
@@ -61,10 +64,6 @@ function CastleAttackModal() {
       }
     });
     console.log(winner);
-
-    setIsAttackStage(false);
-    setMyArmyConfig(undefined);
-    setEnemyArmyConfig(undefined);
   };
 
   return (
