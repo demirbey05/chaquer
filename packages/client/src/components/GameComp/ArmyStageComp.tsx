@@ -6,7 +6,7 @@ import ArmyProgressComp from "./ArmyProgressComp";
 import { Tooltip } from '@chakra-ui/react'
 
 function ArmyStageComp() {
-  const { setIsArmyStage, isArmyStage, numberOfArmy } = useTerrain();
+  const { setIsArmyStage, isArmyStage, numberOfArmy, isArmyMoveStage } = useTerrain();
 
   const handleArmyStage = () => {
     if (isArmyStage) {
@@ -43,12 +43,12 @@ function ArmyStageComp() {
                 ></img>
               </div>
               <div className="col align-items-center">
-                <Tooltip hasArrow label='You have placed your all army' openDelay={300} closeDelay={300} bg='red.600' placement='right-start' isDisabled={numberOfArmy !== 3}>
+                <Tooltip hasArrow label='You have placed your all army' openDelay={300} closeDelay={300} bg='red.600' placement='right-start' isDisabled={numberOfArmy !== 3 || (isArmyMoveStage && !isArmyMoveStage)}>
                   <Button
                     onClick={() => handleArmyStage()}
                     colorScheme={"blackAlpha"}
                     style={{ width: "25px", height: "40px", marginTop: "8.75px" }}
-                    isDisabled={numberOfArmy === 3}
+                    isDisabled={numberOfArmy === 3 || (isArmyMoveStage && isArmyMoveStage)}
                   >
                     {!isArmyStage ? <AddIcon></AddIcon> : <MinusIcon></MinusIcon>}
                   </Button>
