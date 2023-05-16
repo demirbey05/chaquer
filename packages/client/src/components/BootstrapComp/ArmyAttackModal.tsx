@@ -64,7 +64,7 @@ function ArmyAttackModal() {
       setIsAttackStage(false);
       setMyArmyConfig(undefined);
       setEnemyArmyConfig(undefined);
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
     }
   };

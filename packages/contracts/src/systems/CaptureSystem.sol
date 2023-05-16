@@ -92,6 +92,7 @@ contract CaptureSystem is System {
       for (uint i = 0; i < castleOwnerArmies.length; i++) {
         armyOwnable.remove(castleOwnerArmies[i]);
         armyConfig.remove(castleOwnerArmies[i]);
+        position.remove(castleOwnerArmies[i]);
       }
 
       emit CaptureSystem__CaptureResult(1);
