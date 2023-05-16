@@ -14,10 +14,10 @@
       "writeAccess": ["PositionComponent", "ArmyConfigComponent", "ArmyOwnableComponent"]
     },
     { "name": "MoveArmySystem", "writeAccess": ["PositionComponent"] },
-    { "name": "AttackSystem", "writeAccess": ["ArmyConfigComponent", "ArmyOwnableComponent"] },
+    { "name": "AttackSystem", "writeAccess": ["ArmyConfigComponent", "ArmyOwnableComponent", "PositionComponent"] },
     {
       "name": "CaptureSystem",
-      "writeAccess": ["ArmyConfigComponent", "ArmyOwnableComponent", "CastleOwnableComponent"]
+      "writeAccess": ["ArmyConfigComponent", "ArmyOwnableComponent", "CastleOwnableComponent", "PositionComponent"]
     }
   ]
 }

@@ -396,8 +396,7 @@ export function Grid(data: DataProp) {
                     toArmyPosition?.current.x,
                     toArmyPosition?.current.y,
                   ]
-                ),
-                { gasLimit: 1000000 }
+                )
               );
               document.getElementById(
                 `${fromArmyPosition.y},${fromArmyPosition.x}`

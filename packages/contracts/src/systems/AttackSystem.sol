@@ -55,6 +55,7 @@ contract AttackSystem is System {
     if (battleScore.scoreArmyOne > battleScore.scoreArmyTwo) {
       armyConfig.remove(armyTwoID);
       armyOwnable.remove(armyTwoID);
+      position.remove(armyTwoID);
 
       ArmyConfig memory newConfig = ArmyConfig(
         armyOne.numSwordsman >> 1,
@@ -67,6 +68,7 @@ contract AttackSystem is System {
     } else if (battleScore.scoreArmyOne < battleScore.scoreArmyTwo) {
       armyConfig.remove(armyOneID);
       armyOwnable.remove(armyOneID);
+      position.remove(armyOneID);
 
       ArmyConfig memory newConfig = ArmyConfig(
         armyTwo.numSwordsman >> 1,
@@ -78,8 +80,10 @@ contract AttackSystem is System {
     } else {
       armyConfig.remove(armyTwoID);
       armyOwnable.remove(armyTwoID);
+      position.remove(armyTwoID);
       armyConfig.remove(armyOneID);
       armyOwnable.remove(armyOneID);
+      position.remove(armyOneID);
       emit AttackSystem__BattleResult(0);
     }
   }
