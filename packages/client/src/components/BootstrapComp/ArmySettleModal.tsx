@@ -55,11 +55,11 @@ function ArmySettleModal() {
         ]
       )
     );
+    setIsArmySettled(true);
+    setIsArmyStage(false);
     if (tx) {
       // await tx
       await tx.wait(1);
-      setIsArmySettled(true);
-      setIsArmyStage(false);
     }
   };
 
