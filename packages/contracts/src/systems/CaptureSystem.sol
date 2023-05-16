@@ -23,6 +23,8 @@ error CaptureSystem__FriendFireNotAllowed();
 contract CaptureSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
 
+  event CaptureSystem__CaptureResult(uint256 winnerID);
+
   function findSurroundedArmies(
     uint256 castleID,
     uint256[] memory ownerArmies,
@@ -92,11 +94,11 @@ contract CaptureSystem is System {
         armyConfig.remove(castleOwnerArmies[i]);
       }
 
-      return abi.encode(1);
+      emit CaptureSystem__CaptureResult(1);
     } else if (result == 0) {
-      return abi.encode(0);
+      emit CaptureSystem__CaptureResult(0);
     }
     console.log("Siege is failed");
-    return abi.encode(2);
+    emit CaptureSystem__CaptureResult(2);
   }
 }

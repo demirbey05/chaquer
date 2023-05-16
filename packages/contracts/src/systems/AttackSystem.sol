@@ -18,6 +18,8 @@ error AttackSystem__NoArmy();
 error AttackSystem__NoFriendFire();
 
 contract AttackSystem is System {
+  event AttackSystem__BattleResult(uint256 winnerID);
+
   constructor(IWorld _world, address _components) System(_world, _components) {}
 
   function execute(bytes memory args) public returns (bytes memory) {
@@ -61,7 +63,7 @@ contract AttackSystem is System {
       );
       armyConfig.set(armyOneID, newConfig);
 
-      return abi.encode(1, battleScore.scoreArmyOne);
+      emit AttackSystem__BattleResult(1);
     } else if (battleScore.scoreArmyOne < battleScore.scoreArmyTwo) {
       armyConfig.remove(armyOneID);
       armyOwnable.remove(armyOneID);
@@ -72,13 +74,13 @@ contract AttackSystem is System {
         armyTwo.numCavalry >> 1
       );
       armyConfig.set(armyTwoID, newConfig);
-      return abi.encode(2, battleScore.scoreArmyTwo);
+      emit AttackSystem__BattleResult(2);
     } else {
       armyConfig.remove(armyTwoID);
       armyOwnable.remove(armyTwoID);
       armyConfig.remove(armyOneID);
       armyOwnable.remove(armyOneID);
-      return abi.encode(0, battleScore.scoreArmyOne);
+      emit AttackSystem__BattleResult(0);
     }
   }
 }

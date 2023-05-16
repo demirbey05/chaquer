@@ -4,7 +4,9 @@ import {
   useContext,
   createContext,
   ReactNode,
+  useRef,
 } from "react";
+import { ethers } from "ethers";
 
 type TerrainContextType = {
   values: any;
@@ -22,7 +24,7 @@ type TerrainContextType = {
   setCastle: (value: { x: number; y: number }) => void;
   castle: { x: any; y: any };
   setTempCastle: (value: { x: number; y: number }) => void;
-  tempCastle: { x: any, y: any };
+  tempCastle: { x: any; y: any };
   isArmySettled: boolean | undefined;
   setIsArmySettled: (value: boolean) => void;
   isArmyStage: boolean | undefined;
@@ -45,47 +47,49 @@ type TerrainContextType = {
   setMyArmyConfig: (value: any | undefined) => void;
   enemyArmyConfig: any | undefined;
   setEnemyArmyConfig: (value: any | undefined) => void;
+  abiCoder: any;
 };
 
 const TerrainContext = createContext<TerrainContextType>({
   values: null,
-  setIsLoading: () => { },
+  setIsLoading: () => {},
   width: 50,
   height: 50,
-  setValues: () => { },
-  setRefresh: () => { },
+  setValues: () => {},
+  setRefresh: () => {},
   refresh: 0,
   isLoading: false,
-  setPermArray: () => { },
-  saveTerrain: () => { },
+  setPermArray: () => {},
+  saveTerrain: () => {},
   isCastleSettled: false,
-  setIsCastleSettled: () => { },
-  setCastle: () => { },
+  setIsCastleSettled: () => {},
+  setCastle: () => {},
   castle: { x: null, y: null },
-  setTempCastle: () => { },
+  setTempCastle: () => {},
   tempCastle: { x: null, y: null },
   isArmySettled: false,
-  setIsArmySettled: () => { },
+  setIsArmySettled: () => {},
   isArmyStage: false,
-  setIsArmyStage: () => { },
-  setArmyPosition: () => { },
+  setIsArmyStage: () => {},
+  setArmyPosition: () => {},
   armyPosition: { x: null, y: null },
   numberOfArmy: null,
-  setNumberOfArmy: () => { },
+  setNumberOfArmy: () => {},
   fromArmyPosition: undefined,
-  setFromArmyPosition: () => { },
+  setFromArmyPosition: () => {},
   isArmyMoveStage: false,
-  setIsArmyMoveStage: () => { },
+  setIsArmyMoveStage: () => {},
   isAttackStage: false,
-  setIsAttackStage: () => { },
+  setIsAttackStage: () => {},
   attackFromArmyPosition: undefined,
-  setAttackFromArmyPosition: () => { },
+  setAttackFromArmyPosition: () => {},
   attackToArmyPosition: undefined,
-  setAttackToArmyPosition: () => { },
+  setAttackToArmyPosition: () => {},
   myArmyConfig: undefined,
-  setMyArmyConfig: () => { },
+  setMyArmyConfig: () => {},
   enemyArmyConfig: undefined,
-  setEnemyArmyConfig: () => { }
+  setEnemyArmyConfig: () => {},
+  abiCoder: undefined,
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -99,6 +103,7 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
   const [permArray, setPermArray] = useState<any>(null);
   const [refresh, setRefresh] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { current: abiCoder } = useRef(new ethers.utils.AbiCoder());
 
   const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
   const [castle, setCastle] = useState<any>();
@@ -136,26 +141,44 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
 
   const results: TerrainContextType = {
     values,
-    setIsLoading, isLoading,
-    width, height,
+    setIsLoading,
+    isLoading,
+    width,
+    height,
     setValues,
-    setRefresh, refresh,
+    setRefresh,
+    refresh,
     setPermArray,
     saveTerrain,
-    setCastle, castle,
-    setTempCastle, tempCastle,
-    setIsCastleSettled, isCastleSettled,
-    isArmySettled, setIsArmySettled,
-    isArmyStage, setIsArmyStage,
-    armyPosition, setArmyPosition,
-    numberOfArmy, setNumberOfArmy,
-    fromArmyPosition, setFromArmyPosition,
-    isArmyMoveStage, setIsArmyMoveStage,
-    isAttackStage, setIsAttackStage,
-    attackFromArmyPosition, setAttackFromArmyPosition,
-    attackToArmyPosition, setAttackToArmyPosition,
-    myArmyConfig, setMyArmyConfig,
-    enemyArmyConfig, setEnemyArmyConfig
+    setCastle,
+    castle,
+    setTempCastle,
+    tempCastle,
+    setIsCastleSettled,
+    isCastleSettled,
+    isArmySettled,
+    setIsArmySettled,
+    isArmyStage,
+    setIsArmyStage,
+    armyPosition,
+    setArmyPosition,
+    numberOfArmy,
+    setNumberOfArmy,
+    fromArmyPosition,
+    setFromArmyPosition,
+    isArmyMoveStage,
+    setIsArmyMoveStage,
+    isAttackStage,
+    setIsAttackStage,
+    attackFromArmyPosition,
+    setAttackFromArmyPosition,
+    attackToArmyPosition,
+    setAttackToArmyPosition,
+    myArmyConfig,
+    setMyArmyConfig,
+    enemyArmyConfig,
+    setEnemyArmyConfig,
+    abiCoder,
   };
 
   return (
