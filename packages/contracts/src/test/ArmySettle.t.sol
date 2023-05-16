@@ -36,6 +36,7 @@ contract ArmySettleTest is MudTest {
 
     // Initiialize previous steps
     bytes memory mapData = bytes(vm.readFile("src/test/mock_data/full_data.txt"));
+    mapData[5] = hex"03";
     initSystem.execute(mapData);
   }
 
@@ -68,7 +69,7 @@ contract ArmySettleTest is MudTest {
 
   function testWrongTerrainType() public {
     vm.expectRevert(ArmySettle__WrongTerrainType.selector);
-    armySettle.execute(abi.encode(99, 99, 33, 33, 34));
+    armySettle.execute(abi.encode(0, 5, 33, 33, 34));
   }
 
   function testTileIsNotEmpty() public {

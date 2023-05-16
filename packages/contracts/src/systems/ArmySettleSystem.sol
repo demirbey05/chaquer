@@ -52,14 +52,20 @@ contract ArmySettleSystem is System {
     if (castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length != 1) {
       revert ArmySettle__NoCastle();
     }
-    Coord memory castlePosition = positionComponent.getValue(
-      castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate))[0]
-    );
-    uint32 distanceBetween = LibMath.manhattan(castlePosition, coord);
 
-    if (distanceBetween > 3) {
-      revert ArmySettle__TooFarToSettle();
+    uint256[] memory castleIds = castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate));
+    uint256 castleClose = 0;
+    for (uint i = 0; i < castleIds.length; i++) {
+      Coord memory castlePosition = positionComponent.getValue(castleIds[i]);
+      uint32 distanceBetween = LibMath.manhattan(castlePosition, coord);
+      if (distanceBetween <= 3) {
+        castleClose = 1;
+      }
     }
+    if (castleClose == 0) {
+      revert ArmySettle__NoCastle();
+    }
+
     if (armyConfiguration.numArcher + armyConfiguration.numCavalry + armyConfiguration.numSwordsman > 100) {
       revert ArmySettle__TooManySoldier();
     }

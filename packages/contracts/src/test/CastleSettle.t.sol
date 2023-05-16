@@ -52,9 +52,10 @@ contract CastleSettleTest is MudTest {
 
   function testWrongTerrainType() public {
     bytes memory mapData = bytes(vm.readFile("src/test/mock_data/full_data.txt"));
+    mapData[5] = hex"03";
     initSystem.execute(mapData);
     vm.expectRevert(CastleSettle__WrongTerrainType.selector);
-    settleSystem.executeTyped(99, 99);
+    settleSystem.executeTyped(0, 5);
     vm.stopPrank();
   }
 
