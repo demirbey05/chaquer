@@ -49,7 +49,7 @@ contract ArmySettleSystem is System {
     if (armyOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length >= 3) {
       revert ArmySettle__NoArmyRight();
     }
-    if (castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length != 1) {
+    if (castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length < 1) {
       revert ArmySettle__NoCastle();
     }
 

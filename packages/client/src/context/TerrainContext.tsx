@@ -50,50 +50,52 @@ type TerrainContextType = {
   abiCoder: any;
   isCastleDeployedBefore: boolean;
   setIsCastleDeployedBefore: (value: boolean) => void;
+  provider: ethers.providers.BaseProvider;
 };
 
 const TerrainContext = createContext<TerrainContextType>({
   values: null,
-  setIsLoading: () => { },
+  setIsLoading: () => {},
   width: 50,
   height: 50,
-  setValues: () => { },
-  setRefresh: () => { },
+  setValues: () => {},
+  setRefresh: () => {},
   refresh: 0,
   isLoading: false,
-  setPermArray: () => { },
-  saveTerrain: () => { },
+  setPermArray: () => {},
+  saveTerrain: () => {},
   isCastleSettled: false,
-  setIsCastleSettled: () => { },
-  setCastle: () => { },
+  setIsCastleSettled: () => {},
+  setCastle: () => {},
   castle: { x: null, y: null },
-  setTempCastle: () => { },
+  setTempCastle: () => {},
   tempCastle: { x: null, y: null },
   isArmySettled: false,
-  setIsArmySettled: () => { },
+  setIsArmySettled: () => {},
   isArmyStage: false,
-  setIsArmyStage: () => { },
-  setArmyPosition: () => { },
+  setIsArmyStage: () => {},
+  setArmyPosition: () => {},
   armyPosition: { x: null, y: null },
   numberOfArmy: null,
-  setNumberOfArmy: () => { },
+  setNumberOfArmy: () => {},
   fromArmyPosition: undefined,
-  setFromArmyPosition: () => { },
+  setFromArmyPosition: () => {},
   isArmyMoveStage: false,
-  setIsArmyMoveStage: () => { },
+  setIsArmyMoveStage: () => {},
   isAttackStage: false,
-  setIsAttackStage: () => { },
+  setIsAttackStage: () => {},
   attackFromArmyPosition: undefined,
-  setAttackFromArmyPosition: () => { },
+  setAttackFromArmyPosition: () => {},
   attackToArmyPosition: undefined,
-  setAttackToArmyPosition: () => { },
+  setAttackToArmyPosition: () => {},
   myArmyConfig: undefined,
-  setMyArmyConfig: () => { },
+  setMyArmyConfig: () => {},
   enemyArmyConfig: undefined,
-  setEnemyArmyConfig: () => { },
+  setEnemyArmyConfig: () => {},
   abiCoder: undefined,
   isCastleDeployedBefore: false,
-  setIsCastleDeployedBefore: () => { }
+  setIsCastleDeployedBefore: () => {},
+  provider: new ethers.providers.JsonRpcProvider(),
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -108,11 +110,13 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
   const [refresh, setRefresh] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { current: abiCoder } = useRef(new ethers.utils.AbiCoder());
+  const { current: provider } = useRef(new ethers.providers.JsonRpcProvider());
 
   const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
   const [castle, setCastle] = useState<any>();
   const [tempCastle, setTempCastle] = useState<any>();
-  const [isCastleDeployedBefore, setIsCastleDeployedBefore] = useState<boolean>(false);
+  const [isCastleDeployedBefore, setIsCastleDeployedBefore] =
+    useState<boolean>(false);
 
   const [isArmySettled, setIsArmySettled] = useState<boolean>();
   const [isArmyStage, setIsArmyStage] = useState<boolean>();
@@ -185,7 +189,8 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     setEnemyArmyConfig,
     abiCoder,
     isCastleDeployedBefore,
-    setIsCastleDeployedBefore
+    setIsCastleDeployedBefore,
+    provider,
   };
 
   return (

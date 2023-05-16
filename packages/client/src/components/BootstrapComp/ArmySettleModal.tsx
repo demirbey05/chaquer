@@ -5,10 +5,13 @@ import archerImg from "../../images/archer.png";
 import cavalryImg from "../../images/cavalry.png";
 import swordsmanImg from "../../images/swordsman.png";
 import { useState, useEffect, useRef } from "react";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
+import { getRevertReason } from "@latticexyz/network";
+import { providers } from "ethers";
 
 function ArmySettleModal() {
-  const { armyPosition, setIsArmyStage, setIsArmySettled } = useTerrain();
+  const { armyPosition, setIsArmyStage, setIsArmySettled, provider } =
+    useTerrain();
   const { systems } = useMUD();
   const { current: abiCoder } = useRef(new utils.AbiCoder());
 
@@ -28,13 +31,13 @@ function ArmySettleModal() {
 
     if (
       parseInt(swordsmanCount) +
-      parseInt(archerCount) +
-      parseInt(cavalryCount) <=
-      100 &&
+        parseInt(archerCount) +
+        parseInt(cavalryCount) <=
+        100 &&
       parseInt(swordsmanCount) +
-      parseInt(archerCount) +
-      parseInt(cavalryCount) >
-      0
+        parseInt(archerCount) +
+        parseInt(cavalryCount) >
+        0
     ) {
       setIsDisabled(false);
     } else {
@@ -43,23 +46,34 @@ function ArmySettleModal() {
   }, [swordsmanCount, archerCount, cavalryCount]);
 
   const handleClick = async () => {
-    const tx = await systems["system.ArmySettle"].execute(
-      abiCoder.encode(
-        ["uint32", "uint32", "uint32", "uint32", "uint32"],
-        [
-          armyPosition.x,
-          armyPosition.y,
-          swordsmanCount,
-          archerCount,
-          cavalryCount,
-        ]
-      )
-    );
-    setIsArmySettled(true);
-    setIsArmyStage(false);
-    if (tx) {
-      // await tx
-      await tx.wait(1);
+    try {
+      const tx = await systems["system.ArmySettle"].execute(
+        abiCoder.encode(
+          ["uint32", "uint32", "uint32", "uint32", "uint32"],
+          [
+            armyPosition.x,
+            armyPosition.y,
+            swordsmanCount,
+            archerCount,
+            cavalryCount,
+          ]
+        ),
+        { gasLimit: 1000000 }
+      );
+      setIsArmySettled(true);
+      setIsArmyStage(false);
+      if (tx) {
+        // await tx
+        await tx.wait();
+      }
+    } catch (err: any) {
+      //console.log(err.transaction.hash);
+      const tx = await provider.getTransaction(err.transaction.hash);
+      tx.gasPrice = undefined; // tx object contains both gasPrice and maxFeePerGas
+      const encodedRevertReason = await provider.call(
+        tx as providers.TransactionRequest
+      );
+      console.log(encodedRevertReason);
     }
   };
 
