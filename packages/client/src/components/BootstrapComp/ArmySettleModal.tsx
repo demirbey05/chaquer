@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import { ethers, utils } from "ethers";
 import { getRevertReason } from "@latticexyz/network";
 import { providers } from "ethers";
+import { getErrorLog } from "../../utils/getErrorLog";
 
 function ArmySettleModal() {
   const { armyPosition, setIsArmyStage, setIsArmySettled, provider } =
@@ -67,13 +68,7 @@ function ArmySettleModal() {
         await tx.wait();
       }
     } catch (err: any) {
-      //console.log(err.transaction.hash);
-      const tx = await provider.getTransaction(err.transaction.hash);
-      tx.gasPrice = undefined; // tx object contains both gasPrice and maxFeePerGas
-      const encodedRevertReason = await provider.call(
-        tx as providers.TransactionRequest
-      );
-      console.log(encodedRevertReason);
+      console.log(getErrorLog(err.transaction.hash, provider));
     }
   };
 
