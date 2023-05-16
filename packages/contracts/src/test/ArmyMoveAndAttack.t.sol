@@ -318,22 +318,4 @@ contract ArmyMoveAndAttackTest is MudTest {
     assertTrue(newIsOneExist == false);
     assertTrue(newIsTwoExist == false);
   }
-
-  function testSimulate() public {
-    vm.startPrank(bob);
-    settleSystem.executeTyped(14, 18);
-    armySettle.execute(abi.encode(14, 11, 33, 33, 34));
-    vm.stopPrank();
-    vm.startPrank(alice);
-    settleSystem.executeTyped(14, 14);
-    armySettle.execute(abi.encode(14, 17, 33, 33, 34));
-    uint256 armyID = armyOwnable.getEntitiesWithValue(alice)[0];
-    moveArmy.execute(abi.encode(armyID, 14, 20));
-    vm.stopPrank();
-    // Castle1 at 14,8
-    //castle 2 at 14 14
-    // army 1 14 11
-    //army 2 14 17
-    // army 2 14 20
-  }
 }

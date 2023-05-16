@@ -141,6 +141,7 @@ library LibDeploy {
     world.registerSystem(address(system), AttackSystemID);
     authorizeWriter(components, ArmyConfigComponentID, address(system));
     authorizeWriter(components, ArmyOwnableComponentID, address(system));
+    authorizeWriter(components, PositionComponentID, address(system));
     console.log(address(system));
 
     console.log("Deploying CaptureSystem");
@@ -149,6 +150,7 @@ library LibDeploy {
     authorizeWriter(components, ArmyConfigComponentID, address(system));
     authorizeWriter(components, ArmyOwnableComponentID, address(system));
     authorizeWriter(components, CastleOwnableComponentID, address(system));
+    authorizeWriter(components, PositionComponentID, address(system));
     console.log(address(system));
   }
 }
