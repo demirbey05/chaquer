@@ -50,7 +50,7 @@ function CastleAttackModal() {
     );
     let winner: number = -1;
     const tc = await tx.wait();
-    tc.logs.forEach((value) => {
+    tc.logs.forEach((value: any) => {
       if (
         value.topics[0] ==
         ethers.utils.keccak256(

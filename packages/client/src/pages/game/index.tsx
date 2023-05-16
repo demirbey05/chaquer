@@ -6,10 +6,16 @@ import ArmyStageComp from "../../components/GameComp/ArmyStageComp";
 import CastleWarning from "../../components/GameComp/CastleWarning";
 import ArmyWarning from "../../components/GameComp/ArmyWarning";
 import ArmyMoveWarning from "../../components/GameComp/ArmyMoveWarning";
+import LoserWarning from "../../components/GameComp/LoserWarning";
+import { useUserArmy } from "../../hooks/useUserArmy";
+import { getBurnerWallet } from "../../mud/getBurnerWallet";
 
 function Game() {
-  const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage } = useTerrain();
+  const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage, isCastleDeployedBefore } = useTerrain();
   const values = map;
+  const myArmyPosition: any = useUserArmy(
+    getBurnerWallet().address.toLocaleLowerCase()
+  )[0];
 
   const terrainStyles = [0, 40];
 

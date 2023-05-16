@@ -31,8 +31,8 @@ type TerrainContextType = {
   setIsArmyStage: (value: boolean) => void;
   setArmyPosition: (value: { x: number; y: number }) => void;
   armyPosition: { x: any; y: any };
-  numberOfArmy: any;
-  setNumberOfArmy: (value: any) => void;
+  numberOfArmy: any | undefined;
+  setNumberOfArmy: (value: any | undefined) => void;
   fromArmyPosition: { x: any; y: any } | undefined;
   setFromArmyPosition: (value: { x: any; y: any } | undefined) => void;
   isArmyMoveStage: boolean;
@@ -48,48 +48,52 @@ type TerrainContextType = {
   enemyArmyConfig: any | undefined;
   setEnemyArmyConfig: (value: any | undefined) => void;
   abiCoder: any;
+  isCastleDeployedBefore: boolean;
+  setIsCastleDeployedBefore: (value: boolean) => void;
 };
 
 const TerrainContext = createContext<TerrainContextType>({
   values: null,
-  setIsLoading: () => {},
+  setIsLoading: () => { },
   width: 50,
   height: 50,
-  setValues: () => {},
-  setRefresh: () => {},
+  setValues: () => { },
+  setRefresh: () => { },
   refresh: 0,
   isLoading: false,
-  setPermArray: () => {},
-  saveTerrain: () => {},
+  setPermArray: () => { },
+  saveTerrain: () => { },
   isCastleSettled: false,
-  setIsCastleSettled: () => {},
-  setCastle: () => {},
+  setIsCastleSettled: () => { },
+  setCastle: () => { },
   castle: { x: null, y: null },
-  setTempCastle: () => {},
+  setTempCastle: () => { },
   tempCastle: { x: null, y: null },
   isArmySettled: false,
-  setIsArmySettled: () => {},
+  setIsArmySettled: () => { },
   isArmyStage: false,
-  setIsArmyStage: () => {},
-  setArmyPosition: () => {},
+  setIsArmyStage: () => { },
+  setArmyPosition: () => { },
   armyPosition: { x: null, y: null },
   numberOfArmy: null,
-  setNumberOfArmy: () => {},
+  setNumberOfArmy: () => { },
   fromArmyPosition: undefined,
-  setFromArmyPosition: () => {},
+  setFromArmyPosition: () => { },
   isArmyMoveStage: false,
-  setIsArmyMoveStage: () => {},
+  setIsArmyMoveStage: () => { },
   isAttackStage: false,
-  setIsAttackStage: () => {},
+  setIsAttackStage: () => { },
   attackFromArmyPosition: undefined,
-  setAttackFromArmyPosition: () => {},
+  setAttackFromArmyPosition: () => { },
   attackToArmyPosition: undefined,
-  setAttackToArmyPosition: () => {},
+  setAttackToArmyPosition: () => { },
   myArmyConfig: undefined,
-  setMyArmyConfig: () => {},
+  setMyArmyConfig: () => { },
   enemyArmyConfig: undefined,
-  setEnemyArmyConfig: () => {},
+  setEnemyArmyConfig: () => { },
   abiCoder: undefined,
+  isCastleDeployedBefore: false,
+  setIsCastleDeployedBefore: () => { }
 });
 
 const TerrainProvider: React.FC<{ children: ReactNode }> = ({
@@ -108,6 +112,7 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
   const [isCastleSettled, setIsCastleSettled] = useState<boolean>();
   const [castle, setCastle] = useState<any>();
   const [tempCastle, setTempCastle] = useState<any>();
+  const [isCastleDeployedBefore, setIsCastleDeployedBefore] = useState<boolean>(false);
 
   const [isArmySettled, setIsArmySettled] = useState<boolean>();
   const [isArmyStage, setIsArmyStage] = useState<boolean>();
@@ -179,6 +184,8 @@ const TerrainProvider: React.FC<{ children: ReactNode }> = ({
     enemyArmyConfig,
     setEnemyArmyConfig,
     abiCoder,
+    isCastleDeployedBefore,
+    setIsCastleDeployedBefore
   };
 
   return (

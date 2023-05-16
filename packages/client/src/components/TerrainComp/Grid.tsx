@@ -8,7 +8,6 @@ import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
 import { useCastlePositions } from "../../hooks/useCastlePositions";
 import { useEffect, useState, useRef } from "react";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
-import { useBurnerWallets } from "../../hooks/useBurnerWallets";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 import { useArmyPositions } from "../../hooks/useArmyPositions";
@@ -19,7 +18,6 @@ import {
   getComponentValue,
 } from "@latticexyz/recs";
 import { useMUD } from "../../MUDContext";
-import { utils } from "ethers";
 import AttackModal from "../BootstrapComp/ArmyAttackModal";
 import CastleAttackModal from "../BootstrapComp/CastleAttackModal";
 import { findIDFromPosition, Coord } from "../../utils/armyID";
@@ -103,8 +101,9 @@ function isEnemyCastle(
 ) {
   if (myCastlePosition && castlePositions) {
     const filteredArray = castlePositions.filter(
-      (element) =>
-        !(JSON.stringify(myCastlePosition) === JSON.stringify(element))
+      (element) => myCastlePosition.map((position: any) => {
+        !(JSON.stringify(position) === JSON.stringify(element))
+      })
     );
     if (filteredArray) {
       return filteredArray.some((data: any) => {
@@ -208,17 +207,15 @@ export function Grid(data: DataProp) {
     setMyArmyConfig,
     setEnemyArmyConfig,
     abiCoder,
+    setIsCastleDeployedBefore
   } = useTerrain();
   const [tempArmyPos, setTempArmyPos] = useState<any>();
   const movingArmyId = useRef<EntityID>("0" as EntityID);
   const toArmyPosition = useRef({ x: -1, y: -1 });
-  const fromArmyPositionRef = useRef<Coord>({
-    x: "-1",
-    y: "-1",
-  });
+  const fromArmyPositionRef = useRef<Coord>({ x: "-1", y: "-1" });
+  const tempMyCastlePositions = useRef<any[]>([]);
 
   const castlePositions = useCastlePositions();
-  const burnerWallets = useBurnerWallets();
   const myCastlePosition = useCastlePositionByAddress(
     getBurnerWallet().address.toLocaleLowerCase()
   );
@@ -230,6 +227,7 @@ export function Grid(data: DataProp) {
     getBurnerWallet().address.toLocaleLowerCase()
   )[1];
 
+  console.log(myCastlePosition)
   // Handle Clicks
   const handleClick = async (e: any) => {
     if (!isCastleSettled) {
@@ -349,7 +347,7 @@ export function Grid(data: DataProp) {
               x: attackFromArmyPosition.x,
               y: attackFromArmyPosition.y,
             }) &&
-              !isEnemyCastle(
+              isEnemyCastle(
                 { x: data.x, y: data.y },
                 myCastlePosition,
                 castlePositions
@@ -361,7 +359,7 @@ export function Grid(data: DataProp) {
               x: attackFromArmyPosition.x,
               y: attackFromArmyPosition.y,
             }) &&
-              !isEnemyCastle(
+              isEnemyCastle(
                 { x: data.x, y: data.y },
                 myCastlePosition,
                 castlePositions
@@ -409,10 +407,8 @@ export function Grid(data: DataProp) {
               setFromArmyPosition(undefined);
               toArmyPosition.current = { x: -1, y: -1 };
               const tc = await tx.wait();
-              console.log(tc);
             } catch (err: any) {
               const revertData = err.transaction;
-              console.log(revertData);
             }
           }
         }
@@ -429,26 +425,29 @@ export function Grid(data: DataProp) {
   // Check if castle settled before and deploy castle emojis
   useEffect(() => {
     //Checks that if the user has already settled the castle
-    if (castlePositions) {
-      burnerWallets.map((wallet) => {
-        if (
-          wallet.value.toLocaleLowerCase() ===
-          getBurnerWallet().address.toLocaleLowerCase()
-        ) {
-          if (myCastlePosition) {
-            document.getElementById(
-              `${myCastlePosition.y},${myCastlePosition.x}`
-            )!.style.border = "2px solid rgb(245, 169, 6)";
-          }
-          setIsCastleSettled(true);
-        }
-      });
+    if (myCastlePosition.length > 0) {
+      myCastlePosition.map((position: any) => {
+        document.getElementById(
+          `${position.y},${position.x}`
+        )!.style.border = "2px solid rgb(245, 169, 6)";
+      })
+    }
+    setIsCastleDeployedBefore(true)
 
+    if (castlePositions) {
       //Puts the castle emojis to castle positions
       castlePositions.map(
         (data) =>
           (document.getElementById(`${data.y},${data.x}`)!.innerHTML = "🏰")
       );
+    }
+
+    return () => {
+      myCastlePosition.map((position: any) => {
+        document.getElementById(
+          `${position.y},${position.x}`
+        )!.style.border = "";
+      })
     }
   }, [castlePositions, myCastlePosition]);
 
@@ -488,11 +487,7 @@ export function Grid(data: DataProp) {
       });
     }
 
-    if (myArmyNumber) {
-      console.log("Army Number yeniden set edildi")
-      setNumberOfArmy(myArmyNumber);
-      console.log("Army Sayısı: " + myArmyNumber)
-    }
+    setNumberOfArmy(myArmyNumber);
 
     //Puts the castle emojis to castle positions
     armyPositions.map((data: any) => {
@@ -505,7 +500,7 @@ export function Grid(data: DataProp) {
     });
   }, [armyPositions, myArmyPosition]);
 
-  // Handle Army Attack OffCanvas
+  // Handle Army and Castle Attack OffCanvas
   useEffect(() => {
     armyPositions.map((data: any) => {
       if (isAttackStage && fromArmyPositionRef.current) {
@@ -572,7 +567,7 @@ export function Grid(data: DataProp) {
           x: attackFromArmyPosition.x,
           y: attackFromArmyPosition.y,
         }) &&
-          !isEnemyCastle(
+          isEnemyCastle(
             { x: data.x, y: data.y },
             myCastlePosition,
             castlePositions
@@ -584,7 +579,7 @@ export function Grid(data: DataProp) {
           x: attackFromArmyPosition.x,
           y: attackFromArmyPosition.y,
         }) &&
-          !isEnemyCastle(
+          isEnemyCastle(
             { x: data.x, y: data.y },
             myCastlePosition,
             castlePositions
@@ -630,21 +625,25 @@ export function Grid(data: DataProp) {
   //Orange hover effect when user deploys an army
   useEffect(() => {
     if (isArmyStage && myCastlePosition) {
-      canArmyBeSettle(myCastlePosition).map(
-        (data: any) =>
-          canCastleBeSettle(values[data.x][data.y]) &&
-          document
-            .getElementById(`${data.y},${data.x}`)
-            ?.classList.add("borderHoverArmy")
-      );
+      myCastlePosition.map((position: any) => {
+        canArmyBeSettle(position).map(
+          (data: any) =>
+            canCastleBeSettle(values[data.x][data.y]) &&
+            document
+              .getElementById(`${data.y},${data.x}`)
+              ?.classList.add("borderHoverArmy")
+        );
+      })
     } else if (!isArmyStage && myCastlePosition) {
-      canArmyBeSettle(myCastlePosition).map(
-        (data: any) =>
-          canCastleBeSettle(values[data.x][data.y]) &&
-          document
-            .getElementById(`${data.y},${data.x}`)
-            ?.classList.remove("borderHoverArmy")
-      );
+      myCastlePosition.map((position: any) => {
+        canArmyBeSettle(position).map(
+          (data: any) =>
+            canCastleBeSettle(values[data.x][data.y]) &&
+            document
+              .getElementById(`${data.y},${data.x}`)
+              ?.classList.remove("borderHoverArmy")
+        );
+      })
     }
   }, [isArmyStage]);
 
@@ -688,9 +687,9 @@ export function Grid(data: DataProp) {
                   !data.isBorder &&
                   isArmyStage &&
                   numberOfArmy !== 3 &&
-                  canArmyBeSettle(myCastlePosition).some(
+                  (myCastlePosition.length > 0) && myCastlePosition.map((position: any) => canArmyBeSettle(position).some(
                     (item) => item.x === row && item.y === column
-                  )
+                  ))
                   ? "modal"
                   : ""
                 }`}
@@ -704,9 +703,9 @@ export function Grid(data: DataProp) {
                   !data.isBorder &&
                   isArmyStage &&
                   numberOfArmy !== 3 &&
-                  canArmyBeSettle(myCastlePosition).some(
+                  (myCastlePosition.length > 0) && myCastlePosition && myCastlePosition.map((position: any) => canArmyBeSettle(position).some(
                     (item) => item.x === row && item.y === column
-                  )
+                  ))
                   ? "#armySettleModal"
                   : ""
                 }`}

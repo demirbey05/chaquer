@@ -9,12 +9,7 @@ function ArmyProgressComp() {
     const myArmyPosition: any = useUserArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
 
     useEffect(() => {
-        if (numberOfArmy === undefined) {
-            document.getElementById('army1')!.style.backgroundColor = "lightgray";
-            document.getElementById('army2')!.style.backgroundColor = "lightgray";
-            document.getElementById('army3')!.style.backgroundColor = "lightgray";
-        }
-        else if (numberOfArmy === 1) {
+        if (numberOfArmy === 1) {
             document.getElementById('army1')!.style.backgroundColor = "green";
             document.getElementById('army2')!.style.backgroundColor = "lightgray";
             document.getElementById('army3')!.style.backgroundColor = "lightgray";
@@ -29,7 +24,12 @@ function ArmyProgressComp() {
             document.getElementById('army2')!.style.backgroundColor = "green";
             document.getElementById('army3')!.style.backgroundColor = "green";
         }
-    }, [numberOfArmy])
+        else {
+            document.getElementById('army1')!.style.backgroundColor = "lightgray";
+            document.getElementById('army2')!.style.backgroundColor = "lightgray";
+            document.getElementById('army3')!.style.backgroundColor = "lightgray";
+        }
+    }, [numberOfArmy, myArmyPosition])
 
     return (
         <div className="progress-bar">
