@@ -4,14 +4,12 @@ import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { useTerrain } from "../../context/TerrainContext";
 import ArmyProgressComp from "./ArmyProgressComp";
 import { Tooltip } from '@chakra-ui/react'
-import { useUserArmy } from "../../hooks/useUserArmy";
+import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 
 function ArmyStageComp() {
   const { setIsArmyStage, isArmyStage, numberOfArmy, isArmyMoveStage, isCastleDeployedBefore } = useTerrain();
-  const myArmyPosition: any = useUserArmy(
-    getBurnerWallet().address.toLocaleLowerCase()
-  )[0];
+  const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
 
   const handleArmyStage = () => {
     if (isArmyStage) {
@@ -53,7 +51,7 @@ function ArmyStageComp() {
                     onClick={() => handleArmyStage()}
                     colorScheme={"blackAlpha"}
                     style={{ width: "25px", height: "40px", marginTop: "8.75px" }}
-                    isDisabled={(numberOfArmy === 3 || (isArmyMoveStage && isArmyMoveStage))}
+                    isDisabled={(numberOfArmy === 3 || (isArmyMoveStage && isArmyMoveStage)) || (myCastlePosition && (myCastlePosition.length === 0) && isCastleDeployedBefore)}
                   >
                     {!isArmyStage ? <AddIcon></AddIcon> : <MinusIcon></MinusIcon>}
                   </Button>

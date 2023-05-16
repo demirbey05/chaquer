@@ -12,11 +12,7 @@ import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddre
 import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 import { useArmyPositions } from "../../hooks/useArmyPositions";
 import { useUserArmy } from "../../hooks/useUserArmy";
-import {
-  EntityID,
-  getComponentEntities,
-  getComponentValue,
-} from "@latticexyz/recs";
+import { EntityID } from "@latticexyz/recs";
 import { useMUD } from "../../MUDContext";
 import AttackModal from "../BootstrapComp/ArmyAttackModal";
 import CastleAttackModal from "../BootstrapComp/CastleAttackModal";
@@ -200,7 +196,6 @@ export function Grid(data: DataProp) {
     numberOfArmy,
     attackFromArmyPosition,
     setAttackFromArmyPosition,
-    attackToArmyPosition,
     setAttackToArmyPosition,
     isAttackStage,
     setIsAttackStage,
@@ -209,6 +204,7 @@ export function Grid(data: DataProp) {
     abiCoder,
     setIsCastleDeployedBefore
   } = useTerrain();
+
   const [tempArmyPos, setTempArmyPos] = useState<any>();
   const movingArmyId = useRef<EntityID>("0" as EntityID);
   const toArmyPosition = useRef({ x: -1, y: -1 });
@@ -227,7 +223,6 @@ export function Grid(data: DataProp) {
     getBurnerWallet().address.toLocaleLowerCase()
   )[1];
 
-  console.log(myCastlePosition)
   // Handle Clicks
   const handleClick = async (e: any) => {
     if (!isCastleSettled) {
@@ -425,7 +420,7 @@ export function Grid(data: DataProp) {
   // Check if castle settled before and deploy castle emojis
   useEffect(() => {
     //Checks that if the user has already settled the castle
-    if (myCastlePosition.length > 0) {
+    if (myCastlePosition && myCastlePosition.length > 0) {
       myCastlePosition.map((position: any) => {
         document.getElementById(
           `${position.y},${position.x}`
@@ -443,11 +438,13 @@ export function Grid(data: DataProp) {
     }
 
     return () => {
-      myCastlePosition.map((position: any) => {
-        document.getElementById(
-          `${position.y},${position.x}`
-        )!.style.border = "";
-      })
+      if (myCastlePosition) {
+        myCastlePosition.map((position: any) => {
+          document.getElementById(
+            `${position.y},${position.x}`
+          )!.style.border = "";
+        })
+      }
     }
   }, [castlePositions, myCastlePosition]);
 

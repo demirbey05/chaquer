@@ -7,15 +7,13 @@ import CastleWarning from "../../components/GameComp/CastleWarning";
 import ArmyWarning from "../../components/GameComp/ArmyWarning";
 import ArmyMoveWarning from "../../components/GameComp/ArmyMoveWarning";
 import LoserWarning from "../../components/GameComp/LoserWarning";
-import { useUserArmy } from "../../hooks/useUserArmy";
+import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 
 function Game() {
   const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage, isCastleDeployedBefore } = useTerrain();
   const values = map;
-  const myArmyPosition: any = useUserArmy(
-    getBurnerWallet().address.toLocaleLowerCase()
-  )[0];
+  const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
 
   const terrainStyles = [0, 40];
 
@@ -25,6 +23,7 @@ function Game() {
       {isCastleSettled && isArmyStage && <ArmyWarning />}
       {isArmyMoveStage && <ArmyMoveWarning />}
       {isCastleSettled && <ArmyStageComp />}
+      {(myCastlePosition && (myCastlePosition.length === 0) && isCastleDeployedBefore && isCastleSettled) && <LoserWarning />}
       <ScrollContainer
         className="scroll-container"
         style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}
