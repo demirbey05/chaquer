@@ -161,7 +161,7 @@ function CastleAttackModal() {
           </div>
           <div className="col-6">
             <h1 className="text-center border-bottom border-danger text-dark">
-              Enemy Army
+              Castle Army
             </h1>
             <div className="row">
               <div className="row justify-content-center text-center mt-2">
