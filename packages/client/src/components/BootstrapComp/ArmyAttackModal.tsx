@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext";
-import warInfoBg from "../../images/warInfoBg";
+import warInfoBg from "../../images/warInfoBg.png";
 import { useMUD } from "../../MUDContext";
 import { findIDFromPosition } from "../../utils/armyID";
 import { ethers } from "ethers";
