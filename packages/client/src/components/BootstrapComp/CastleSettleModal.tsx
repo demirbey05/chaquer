@@ -3,8 +3,7 @@ import { useMUD } from "../../MUDContext";
 import { Button } from "@chakra-ui/react";
 
 function CastleSettleModal() {
-  const { isCastleSettled, tempCastle, setCastle, setIsCastleSettled } =
-    useTerrain();
+  const { isCastleSettled, tempCastle, setCastle, setIsCastleSettled, setIsCastleDeployedBefore } = useTerrain();
   const { systems } = useMUD();
 
   const handleClick = async () => {
@@ -14,11 +13,11 @@ function CastleSettleModal() {
         tempCastle.x,
         tempCastle.y
       ));
+    setIsCastleSettled(true);
     if (tx) {
       setCastle({ x: tempCastle.x, y: tempCastle.y });
       const tc = await tx.wait();
-      setIsCastleSettled(true);
-      console.log(tc);
+      setIsCastleDeployedBefore(true)
     }
   };
 

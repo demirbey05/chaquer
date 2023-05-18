@@ -1,12 +1,10 @@
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext";
-import { useRef } from "react";
-import { EntityID } from "@latticexyz/recs";
-import offcanvasImg from "../../images/offcanvas-bg.png";
-import offcanvasImg2 from "../../images/offcanvas-bg2.png";
+import warInfoBg from "../../images/warInfoBg";
 import { useMUD } from "../../MUDContext";
 import { findIDFromPosition } from "../../utils/armyID";
 import { ethers } from "ethers";
+import { useToast } from '@chakra-ui/react'
 
 function ArmyAttackModal() {
   const { systems, components, world } = useMUD();
@@ -18,10 +16,9 @@ function ArmyAttackModal() {
     setIsAttackStage,
     attackFromArmyPosition,
     attackToArmyPosition,
-    setAttackToArmyPosition,
-    setAttackFromArmyPosition,
     abiCoder,
   } = useTerrain();
+  const toast = useToast()
 
   const handleAttackLater = () => {
     setIsAttackStage(false);
@@ -48,9 +45,16 @@ function ArmyAttackModal() {
           [attackFromArmyId, attackToArmyId]
         )
       );
+      document.getElementById(`${attackToArmyPosition.y},${attackToArmyPosition.x}`)!.setAttribute("data-bs-toggle", "");
+      document.getElementById(`${attackToArmyPosition.y},${attackToArmyPosition.x}`)!.setAttribute("data-bs-target", "");
+
+      setIsAttackStage(false);
+      setMyArmyConfig(undefined);
+      setEnemyArmyConfig(undefined);
+
       let winner: number = -1;
       const tc = await tx.wait();
-      tc.logs.forEach((value) => {
+      tc.logs.forEach((value: any) => {
         if (
           value.topics[0] ==
           ethers.utils.keccak256(
@@ -60,10 +64,46 @@ function ArmyAttackModal() {
           winner = parseInt(value.data);
         }
       });
-      console.log(winner);
-      setIsAttackStage(false);
-      setMyArmyConfig(undefined);
-      setEnemyArmyConfig(undefined);
+
+      if (winner !== -1) {
+        if (winner === 1) {
+          return (
+            toast({
+              title: 'War Result',
+              description: "You've defeated the enemy army. Congrats!",
+              status: 'success',
+              duration: 9000,
+              position: "top-left",
+              isClosable: true,
+            })
+          )
+        }
+        else if (winner === 2) {
+          return (
+            toast({
+              title: 'War Result',
+              description: "You've lost the war. Nice try!",
+              status: 'error',
+              duration: 9000,
+              position: "top-left",
+              isClosable: true,
+            })
+          )
+        }
+        else {
+          return (
+            toast({
+              title: 'War Result',
+              description: "All soldiers in the battle field are dead for the both side. Draw!",
+              status: 'info',
+              duration: 9000,
+              position: "top-left",
+              isClosable: true,
+            })
+          )
+        }
+
+      }
     } catch (err: any) {
       console.log(err);
     }
@@ -81,7 +121,7 @@ function ArmyAttackModal() {
         margin: "auto",
         bottom: "25px",
         padding: "10px",
-        backgroundImage: `url(${offcanvasImg2})`,
+        backgroundImage: `url(${warInfoBg})`,
         backgroundSize: "cover",
       }}
       tabIndex={-1}

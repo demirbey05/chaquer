@@ -11,8 +11,7 @@ import { providers } from "ethers";
 import { getErrorLog } from "../../utils/getErrorLog";
 
 function ArmySettleModal() {
-  const { armyPosition, setIsArmyStage, setIsArmySettled, provider } =
-    useTerrain();
+  const { armyPosition, setIsArmyStage, setIsArmySettled, provider } = useTerrain();
   const { systems } = useMUD();
   const { current: abiCoder } = useRef(new utils.AbiCoder());
 
@@ -32,13 +31,13 @@ function ArmySettleModal() {
 
     if (
       parseInt(swordsmanCount) +
-        parseInt(archerCount) +
-        parseInt(cavalryCount) <=
-        100 &&
+      parseInt(archerCount) +
+      parseInt(cavalryCount) <=
+      100 &&
       parseInt(swordsmanCount) +
-        parseInt(archerCount) +
-        parseInt(cavalryCount) >
-        0
+      parseInt(archerCount) +
+      parseInt(cavalryCount) >
+      0
     ) {
       setIsDisabled(false);
     } else {

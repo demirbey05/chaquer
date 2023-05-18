@@ -1,12 +1,10 @@
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext";
-import { useRef } from "react";
-import { EntityID } from "@latticexyz/recs";
-import offcanvasImg from "../../images/offcanvas-bg.png";
-import offcanvasImg2 from "../../images/offcanvas-bg2.png";
+import warInfoBg from "../../images/warInfoBg";
 import { findIDFromPosition } from "../../utils/armyID";
 import { ethers } from "ethers";
 import { useMUD } from "../../MUDContext";
+import { useToast } from '@chakra-ui/react'
 
 function CastleAttackModal() {
   const { components, systems, world } = useMUD();
@@ -17,11 +15,11 @@ function CastleAttackModal() {
     enemyArmyConfig,
     setIsAttackStage,
     attackFromArmyPosition,
-    setAttackToArmyPosition,
-    setAttackFromArmyPosition,
     attackToArmyPosition,
     abiCoder,
   } = useTerrain();
+  const toast = useToast()
+
   const handleAttackLater = () => {
     setIsAttackStage(false);
     setMyArmyConfig(undefined);
@@ -48,9 +46,11 @@ function CastleAttackModal() {
         [attackToCastleId, attackFromArmyId]
       )
     );
+
     setIsAttackStage(false);
     setMyArmyConfig(undefined);
     setEnemyArmyConfig(undefined);
+
     let winner: number = -1;
     const tc = await tx.wait();
     tc.logs.forEach((value: any) => {
@@ -63,7 +63,46 @@ function CastleAttackModal() {
         winner = parseInt(value.data);
       }
     });
-    console.log(winner);
+
+    if (winner !== -1) {
+      if (winner === 1) {
+        return (
+          toast({
+            title: 'War Result',
+            description: "You've captured the enemy's castle. You can use the new castle!",
+            status: 'success',
+            duration: 9000,
+            position: "top-left",
+            isClosable: true,
+          })
+        )
+      }
+      else if (winner === 2) {
+        return (
+          toast({
+            title: 'War Result',
+            description: "You could not capture the enemy's castle. Nice try!",
+            status: 'error',
+            duration: 9000,
+            position: "top-left",
+            isClosable: true,
+          })
+        )
+      }
+      else {
+        return (
+          toast({
+            title: 'War Result',
+            description: "All the soldiers are dead for the both side. Draw!",
+            status: 'info',
+            duration: 9000,
+            position: "top-left",
+            isClosable: true,
+          })
+        )
+      }
+
+    }
   };
 
   return (
@@ -78,7 +117,7 @@ function CastleAttackModal() {
         margin: "auto",
         bottom: "25px",
         padding: "10px",
-        backgroundImage: `url(${offcanvasImg2})`,
+        backgroundImage: `url(${warInfoBg})`,
         backgroundSize: "cover",
       }}
       tabIndex={-1}
