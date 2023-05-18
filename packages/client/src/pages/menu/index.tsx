@@ -6,14 +6,11 @@ import MyModal from "../../components/ChakraComp/TerrainInfoModal";
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext.js";
 import map from "../../../map.json";
-import dungeonImg from "../../images/dungeon.png";
-import castleImg from "../../images/castle.png";
+import chaquerImg from '../../images/chaquer_bg.png';
 import { Link } from "react-router-dom";
 import { useMUD } from "../../MUDContext";
 import { flatten2D } from "../../utils/terrainArray";
 import { ethers, Contract } from "ethers";
-import { getContractAddress } from "../../utils/getContractAddress";
-import { config } from "../../mud/config";
 import { useComponentValue } from "@latticexyz/react";
 
 function Menu() {
@@ -52,13 +49,13 @@ function Menu() {
     const tc = await tx.wait();
   };
 
-  const terrainStyles = [8, 7];
+  const terrainStyles = [8, 14];
   const values = map;
 
   return (
     <div
       style={{
-        backgroundImage: `url(${dungeonImg})`,
+        backgroundImage: `url(${chaquerImg})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
@@ -84,19 +81,10 @@ function Menu() {
               )}
             </>
           )}
-          <div className="col align-items-center justify-content-center">
+          <div className="col-4 align-items-center justify-content-center">
             <h2 className="text-center text-white mb-5 display-4 border-top border-bottom font-bold">
               Chaquer
             </h2>
-            <img
-              className="m-auto mb-5"
-              src={castleImg}
-              style={{
-                width: "250px",
-                height: "250px",
-                justifyContent: "center",
-              }}
-            ></img>
             {refresh !== 0 && (
               <div className="text-center mt-2 mb-2">
                 <Link to="/game">
@@ -125,6 +113,7 @@ function Menu() {
                 variant="ghost"
                 onClick={handleRefresh}
                 p="7"
+                marginTop={refresh === 0 ? "300px" : "0"}
               >
                 {refresh === 0 ? "Enter the Game" : "Regenerate the Terrain"}
               </Button>

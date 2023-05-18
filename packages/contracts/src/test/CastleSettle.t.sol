@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import { Deploy } from "./Deploy.sol";
 import "std-contracts/test/MudTest.t.sol";
 import { console } from "forge-std/console.sol";
-import { CastleSettleSystem, ID as CastleSettleSystemID, MapIsNotReady, CoordinatesOutOfBound, TileIsNotEmpty, WrongTerrainType, NoCastleRight } from "systems/CastleSettleSystem.sol";
+import { CastleSettleSystem, ID as CastleSettleSystemID, CastleSettle__MapIsNotReady, CastleSettle__CoordinatesOutOfBound, CastleSettle__TileIsNotEmpty, CastleSettle__WrongTerrainType, CastleSettle__NoCastleRight } from "systems/CastleSettleSystem.sol";
 import { MapConfigComponent, ID as MapConfigComponentID } from "components/MapConfigComponent.sol";
 import { InitSystem, ID as InitSystemID } from "systems/InitSystem.sol";
 import { CastleOwnableComponent, ID as CastleOwnableComponentID } from "components/CastleOwnableComponent.sol";
@@ -29,14 +29,14 @@ contract CastleSettleTest is MudTest {
   }
 
   function testMapIsNotReady() public {
-    vm.expectRevert(MapIsNotReady.selector);
+    vm.expectRevert(CastleSettle__MapIsNotReady.selector);
     settleSystem.executeTyped(3, 5);
   }
 
   function testCoordinatesOutOfBound() public {
     bytes memory mapData = bytes(vm.readFile("src/test/mock_data/full_data.txt"));
     initSystem.execute(mapData);
-    vm.expectRevert(CoordinatesOutOfBound.selector);
+    vm.expectRevert(CastleSettle__CoordinatesOutOfBound.selector);
     settleSystem.executeTyped(300, 400);
   }
 
@@ -45,16 +45,17 @@ contract CastleSettleTest is MudTest {
     initSystem.execute(mapData);
     settleSystem.executeTyped(3, 4);
     vm.startPrank(alice);
-    vm.expectRevert(TileIsNotEmpty.selector);
+    vm.expectRevert(CastleSettle__TileIsNotEmpty.selector);
     settleSystem.executeTyped(3, 4);
     vm.stopPrank();
   }
 
   function testWrongTerrainType() public {
     bytes memory mapData = bytes(vm.readFile("src/test/mock_data/full_data.txt"));
+    mapData[5] = hex"03";
     initSystem.execute(mapData);
-    vm.expectRevert(WrongTerrainType.selector);
-    settleSystem.executeTyped(99, 99);
+    vm.expectRevert(CastleSettle__WrongTerrainType.selector);
+    settleSystem.executeTyped(0, 5);
     vm.stopPrank();
   }
 
@@ -62,7 +63,7 @@ contract CastleSettleTest is MudTest {
     bytes memory mapData = bytes(vm.readFile("src/test/mock_data/full_data.txt"));
     initSystem.execute(mapData);
     settleSystem.executeTyped(3, 4);
-    vm.expectRevert(NoCastleRight.selector);
+    vm.expectRevert(CastleSettle__NoCastleRight.selector);
     settleSystem.executeTyped(5, 7);
     vm.stopPrank();
   }

@@ -14,13 +14,13 @@ import { LibMath } from "libraries/LibMath.sol";
 
 uint256 constant ID = uint256(keccak256("system.ArmySettle"));
 
-error CoordinatesOutOfBound();
-error TileIsNotEmpty();
-error NoArmyRight();
-error NoCastle();
-error TooFarToSettle();
-error TooManySoldier();
-error WrongTerrainType();
+error ArmySettle__CoordinatesOutOfBound();
+error ArmySettle__TileIsNotEmpty();
+error ArmySettle__NoArmyRight();
+error ArmySettle__NoCastle();
+error ArmySettle__TooFarToSettle();
+error ArmySettle__TooManySoldier();
+error ArmySettle__WrongTerrainType();
 
 contract ArmySettleSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -35,33 +35,39 @@ contract ArmySettleSystem is System {
     address ownerCandidate = msg.sender;
 
     // Coordinates is out of bound
-    if (!(coord.x < 100 && coord.y < 100 && coord.x >= 0 && coord.y >= 0)) {
-      revert CoordinatesOutOfBound();
+    if (!(coord.x < 50 && coord.y < 50 && coord.x >= 0 && coord.y >= 0)) {
+      revert ArmySettle__CoordinatesOutOfBound();
     }
-    if (terrainComponent.getTerrain(coord.y * 100 + coord.x) != hex"01") {
-      revert WrongTerrainType();
+    if (terrainComponent.getTerrain(coord.x * 50 + coord.y) != hex"01") {
+      revert ArmySettle__WrongTerrainType();
     }
     // If there is an another entity at that coordinate
     if (positionComponent.getEntitiesWithValue(abi.encode(coord)).length != 0) {
-      revert TileIsNotEmpty();
+      revert ArmySettle__TileIsNotEmpty();
     }
     // You can have three army
     if (armyOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length >= 3) {
-      revert NoArmyRight();
+      revert ArmySettle__NoArmyRight();
     }
-    if (castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length != 1) {
-      revert NoCastle();
+    if (castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate)).length < 1) {
+      revert ArmySettle__NoCastle();
     }
-    Coord memory castlePosition = positionComponent.getValue(
-      castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate))[0]
-    );
-    uint32 distanceBetween = LibMath.manhattan(castlePosition, coord);
 
-    if (distanceBetween > 3) {
-      revert TooFarToSettle();
+    uint256[] memory castleIds = castleOwnable.getEntitiesWithValue(abi.encode(ownerCandidate));
+    uint256 castleClose = 0;
+    for (uint i = 0; i < castleIds.length; i++) {
+      Coord memory castlePosition = positionComponent.getValue(castleIds[i]);
+      uint32 distanceBetween = LibMath.manhattan(castlePosition, coord);
+      if (distanceBetween <= 3) {
+        castleClose = 1;
+      }
     }
-    if (armyConfiguration.numArcher + armyConfiguration.numCavalry + armyConfiguration.numSwordsman != 100) {
-      revert TooManySoldier();
+    if (castleClose == 0) {
+      revert ArmySettle__NoCastle();
+    }
+
+    if (armyConfiguration.numArcher + armyConfiguration.numCavalry + armyConfiguration.numSwordsman > 100) {
+      revert ArmySettle__TooManySoldier();
     }
 
     uint256 entityID = uint256(keccak256(abi.encodePacked(coord.x, coord.y, "Army", ownerCandidate)));

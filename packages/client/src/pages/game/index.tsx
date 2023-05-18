@@ -2,34 +2,29 @@ import { Grid } from "../../components/TerrainComp/Grid";
 import { useTerrain } from "../../context/TerrainContext";
 import map from "../../../map.json";
 import ScrollContainer from "react-indiana-drag-scroll";
-import SmallMap from "../../components/GameComp/SmallMap";
+import ArmyStageComp from "../../components/GameComp/ArmyStageComp";
+import CastleWarning from "../../components/GameComp/CastleWarning";
+import ArmyWarning from "../../components/GameComp/ArmyWarning";
+import ArmyMoveWarning from "../../components/GameComp/ArmyMoveWarning";
+import LoserWarning from "../../components/GameComp/LoserWarning";
+import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
+import { getBurnerWallet } from "../../mud/getBurnerWallet";
+import ArmyProgressComp from "../../components/GameComp/ArmyProgressComp";
 
 function Game() {
-  const { width, height, isCastleSettled } = useTerrain();
+  const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage, isCastleDeployedBefore } = useTerrain();
   const values = map;
+  const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
 
-  const terrainStyles = [0, 25];
+  const terrainStyles = [0, 40];
 
   return (
     <div>
-      {!isCastleSettled && (
-        <div
-          style={{
-            position: "absolute",
-            zIndex: "1",
-            color: "white",
-            left: "0",
-            right: "0",
-            top: "0",
-            margin: "100px auto",
-            width: "600px",
-          }}
-        >
-          <h2 className="text-center text-3xl text-white mb-2 border-top border-bottom font-bold">
-            Please settle your castle!
-          </h2>
-        </div>
-      )}
+      {!isCastleSettled && <CastleWarning />}
+      {isCastleSettled && isArmyStage && <ArmyWarning />}
+      {isArmyMoveStage && <ArmyMoveWarning />}
+      {isCastleSettled && <ArmyProgressComp />}
+      {(myCastlePosition && (myCastlePosition.length === 0) && isCastleDeployedBefore && isCastleSettled) && <LoserWarning />}
       <ScrollContainer
         className="scroll-container"
         style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}

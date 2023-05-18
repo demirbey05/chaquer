@@ -8,11 +8,11 @@ import { PositionComponent, ID as PositionComponentID, Coord } from "components/
 import { CastleOwnableComponent, ID as CastleOwnableID } from "components/CastleOwnableComponent.sol";
 uint256 constant ID = uint256(keccak256("system.CastleSettle"));
 
-error MapIsNotReady();
-error CoordinatesOutOfBound();
-error TileIsNotEmpty();
-error WrongTerrainType();
-error NoCastleRight();
+error CastleSettle__MapIsNotReady();
+error CastleSettle__CoordinatesOutOfBound();
+error CastleSettle__TileIsNotEmpty();
+error CastleSettle__WrongTerrainType();
+error CastleSettle__NoCastleRight();
 
 contract CastleSettleSystem is System {
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -27,24 +27,24 @@ contract CastleSettleSystem is System {
     // Checks
     // Map is not initialized
     //@dev Maybe we can define another component for width and height
-    if ((terrainComponent.getTerrainLength()) != 10000) {
-      revert MapIsNotReady();
+    if ((terrainComponent.getTerrainLength()) != 2500) {
+      revert CastleSettle__MapIsNotReady();
     }
     // Coordinates is out of bound
-    if (!(x < 100 && y < 100 && x >= 0 && y >= 0)) {
-      revert CoordinatesOutOfBound();
+    if (!(x < 50 && y < 50 && x >= 0 && y >= 0)) {
+      revert CastleSettle__CoordinatesOutOfBound();
     }
     // If there is an another entity at that coordinate
     if (positionComponent.getEntitiesWithValue(abi.encode(Coord(x, y))).length != 0) {
-      revert TileIsNotEmpty();
+      revert CastleSettle__TileIsNotEmpty();
     }
     // The terrain type is not land
-    if (terrainComponent.getTerrain(y * 100 + x) != hex"01") {
-      revert WrongTerrainType();
+    if (terrainComponent.getTerrain(x * 50 + y) != hex"01") {
+      revert CastleSettle__WrongTerrainType();
     }
     // You can only have one castle
     if (castleOwnableComponent.getEntitiesWithValue(abi.encode(ownerCandidate)).length != 0) {
-      revert NoCastleRight();
+      revert CastleSettle__NoCastleRight();
     }
 
     uint256 entityID = uint256(keccak256(abi.encodePacked(x, y, "Castle", ownerCandidate)));
