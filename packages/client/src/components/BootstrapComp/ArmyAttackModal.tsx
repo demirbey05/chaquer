@@ -143,8 +143,7 @@ function ArmyAttackModal() {
             <div className="row">
               <div className="row justify-content-center text-center mt-2">
                 <p>
-                  Swordsman:{" "}
-                  {myArmyConfig && myArmyConfig.armyConfig.numSwordsman}
+                  Swordsman:{myArmyConfig && myArmyConfig.armyConfig.numSwordsman}
                 </p>
               </div>
             </div>
@@ -170,8 +169,7 @@ function ArmyAttackModal() {
             <div className="row">
               <div className="row justify-content-center text-center mt-2">
                 <p>
-                  Swordsman:{" "}
-                  {enemyArmyConfig && enemyArmyConfig.armyConfig.numSwordsman}
+                  Swordsman:{enemyArmyConfig && enemyArmyConfig.armyConfig.numSwordsman}
                 </p>
               </div>
             </div>

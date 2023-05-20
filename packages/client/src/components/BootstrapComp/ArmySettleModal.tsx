@@ -5,9 +5,7 @@ import archerImg from "../../images/archer.png";
 import cavalryImg from "../../images/cavalry.png";
 import swordsmanImg from "../../images/swordsman.png";
 import { useState, useEffect, useRef } from "react";
-import { ethers, utils } from "ethers";
-import { getRevertReason } from "@latticexyz/network";
-import { providers } from "ethers";
+import { utils } from "ethers";
 import { getErrorLog } from "../../utils/getErrorLog";
 
 function ArmySettleModal() {

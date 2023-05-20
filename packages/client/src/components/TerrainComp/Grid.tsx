@@ -1,22 +1,27 @@
-import { TerrainType } from "../../terrain-helper/types";
-import grassImg from "../../images/grass.png";
-import mountainImg from "../../images/mountain.png";
-import seaImg from "../../images/sea.png";
-import { useTerrain } from "../../context/TerrainContext";
 import "../../styles/globals.css";
-import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
-import { useCastlePositions } from "../../hooks/useCastlePositions";
 import { useEffect, useState, useRef } from "react";
+import { TerrainType } from "../../terrain-helper/types";
+import { useTerrain } from "../../context/TerrainContext";
+import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
+import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
+import AttackModal from "../BootstrapComp/ArmyAttackModal";
+import CastleAttackModal from "../BootstrapComp/CastleAttackModal";
+import { useCastlePositions } from "../../hooks/useCastlePositions";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
-import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
 import { useArmyPositions } from "../../hooks/useArmyPositions";
 import { useMyArmy } from "../../hooks/useMyArmy";
 import { EntityID } from "@latticexyz/recs";
 import { useMUD } from "../../MUDContext";
-import AttackModal from "../BootstrapComp/ArmyAttackModal";
-import CastleAttackModal from "../BootstrapComp/CastleAttackModal";
 import { findIDFromPosition, Coord } from "../../utils/armyID";
+import { getTerrainAsset } from '../../utils/getTerrainAsset';
+import { getDataAtrY, getDataAtrX } from "../../utils/getIdDataAtr";
+import { canCastleBeSettle } from "../../utils/canCastleBeSettle";
+import { isMyArmy } from "../../utils/isMyArmy";
+import { isEnemyArmy } from "../../utils/isEnemyArmy";
+import { getMyArmyConfigByPosition, getEnemyArmyConfigByPosition } from "../../utils/getArmyConfigByPosition";
+import { getManhattanPositions } from "../../utils/getManhattanPositions";
+import { isEnemyCastle } from "../../utils/isEnemyCastle";
 
 export type DataProp = {
   width: number;
@@ -26,155 +31,14 @@ export type DataProp = {
   isBorder: boolean;
 };
 
-function getTerrainAsset(data: any) {
-  if (data === 1) {
-    return `url(${grassImg})`;
-  } else if (data === 2) {
-    return `url(${seaImg})`;
-  } else {
-    return `url(${mountainImg})`;
-  }
-}
-
-function getDataAtrX(event: any) {
-  const id = event.target.dataset.row;
-  return id.toString();
-}
-
-function getDataAtrY(event: any) {
-  const id = event.target.dataset.column;
-  return id.toString();
-}
-
-function canCastleBeSettle(data: any) {
-  if (data !== 1) {
-    return false;
-  }
-  return true;
-}
-
-function isMyArmy(position: { x: number; y: number }, myArmyPositions: any[]) {
-  if (myArmyPositions) {
-    return myArmyPositions.some((data: any) => {
-      return (
-        data.position.x.toString() === position.x.toString() &&
-        data.position.y.toString() === position.y.toString()
-      );
-    });
-  }
-  return false;
-}
-
-function isEnemyArmy(
-  position: any,
-  armyPositions: any[],
-  myArmyPositions: any[]
-) {
-  if (armyPositions && myArmyPositions) {
-    const filteredArray = armyPositions.filter(
-      (element) =>
-        !myArmyPositions.some(
-          (data: any) =>
-            JSON.stringify(data.position) === JSON.stringify(element.position)
-        )
-    );
-    if (filteredArray) {
-      return filteredArray.some((data: any) => {
-        return (
-          data.position.x.toString() === position.x.toString() &&
-          data.position.y.toString() === position.y.toString()
-        );
-      });
-    }
-  }
-  return false;
-}
-
-function isEnemyCastle(position: any, myCastlePosition: any[], castlePositions: any[]) {
-  if (myCastlePosition && castlePositions) {
-    const filteredArray = castlePositions.filter((element: any) =>
-      myCastlePosition.every((pos) =>
-        JSON.stringify(pos) !== JSON.stringify(element)
-      )
-    );
-    return filteredArray.some((data: any) =>
-      data.x.toString() === position.x.toString() &&
-      data.y.toString() === position.y.toString()
-    );
-  }
-  return false;
-}
-
-
-function getEnemyArmyConfigByPosition(
-  position: { x: any; y: any },
-  armyPositions: any[]
-) {
-  if (armyPositions) {
-    const armyConfig = armyPositions.find((data: any) => {
-      return (
-        position.x.toString() === data.position.x.toString() &&
-        position.y.toString() === data.position.y.toString()
-      );
-    });
-    return armyConfig;
-  }
-}
-
-function getMyArmyConfigByPosition(
-  position: { x: any; y: any },
-  myArmyPosition: any[]
-) {
-  if (myArmyPosition) {
-    const armyConfig = myArmyPosition.find((data: any) => {
-      return (
-        position.x.toString() === data.position.x.toString() &&
-        position.y.toString() === data.position.y.toString()
-      );
-    });
-    return armyConfig;
-  }
-}
-
-function getManhattanPositions(position: { x: number; y: number }) {
-  const positions = [
-    { x: position.x + 1, y: position.y },
-    { x: position.x + 1, y: position.y + 1 },
-    { x: position.x + 1, y: position.y + 2 },
-    { x: position.x + 1, y: position.y - 1 },
-    { x: position.x + 1, y: position.y - 2 },
-    { x: position.x + 2, y: position.y },
-    { x: position.x + 2, y: position.y + 1 },
-    { x: position.x + 2, y: position.y - 1 },
-    { x: position.x + 3, y: position.y },
-    { x: position.x - 1, y: position.y },
-    { x: position.x - 1, y: position.y + 1 },
-    { x: position.x - 1, y: position.y + 2 },
-    { x: position.x - 1, y: position.y - 2 },
-    { x: position.x - 1, y: position.y - 1 },
-    { x: position.x - 2, y: position.y },
-    { x: position.x - 2, y: position.y + 1 },
-    { x: position.x - 2, y: position.y - 1 },
-    { x: position.x - 3, y: position.y },
-    { x: position.x, y: position.y + 1 },
-    { x: position.x, y: position.y + 2 },
-    { x: position.x, y: position.y + 3 },
-    { x: position.x, y: position.y - 3 },
-    { x: position.x, y: position.y - 2 },
-    { x: position.x, y: position.y - 1 },
-  ];
-
-  return positions;
-}
-
 export function Grid(data: DataProp) {
   const width = data.width;
   const height = data.height;
   const values = data.values;
   const rows = Array.from({ length: height }, (v, i) => i);
   const columns = Array.from({ length: width }, (v, i) => i);
-  const { components, systems, world } = useMUD();
 
+  const { components, systems, world } = useMUD();
   const {
     setIsArmyMoveStage,
     isArmyMoveStage,
@@ -202,16 +66,10 @@ export function Grid(data: DataProp) {
   const fromArmyPositionRef = useRef<Coord>({ x: "-1", y: "-1" });
 
   const castlePositions = useCastlePositions();
-  const myCastlePosition = useCastlePositionByAddress(
-    getBurnerWallet().address.toLocaleLowerCase()
-  );
+  const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
   const armyPositions: any = useArmyPositions()[0];
-  const myArmyPosition: any = useMyArmy(
-    getBurnerWallet().address.toLocaleLowerCase()
-  )[0];
-  const myArmyNumber = useMyArmy(
-    getBurnerWallet().address.toLocaleLowerCase()
-  )[1];
+  const myArmyPosition: any = useMyArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
+  const myArmyNumber = useMyArmy(getBurnerWallet().address.toLocaleLowerCase())[1];
 
   // Handle Clicks
   const handleClick = async (e: any) => {
@@ -369,8 +227,8 @@ export function Grid(data: DataProp) {
     };
   }, [castlePositions, myCastlePosition]);
 
+  //Makes castle position unClickable to not cause bug during army settlement
   useEffect(() => {
-    //Makes castle position unClickable to not cause bug during army settlement
     if (castlePositions) {
       castlePositions.map((data) => {
         document
@@ -599,6 +457,6 @@ export function Grid(data: DataProp) {
       <ArmySettleModal />
       <AttackModal />
       <CastleAttackModal />
-    </div>
+    </div >
   );
 }

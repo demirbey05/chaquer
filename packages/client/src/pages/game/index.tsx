@@ -2,7 +2,7 @@ import { Grid } from "../../components/TerrainComp/Grid";
 import { useTerrain } from "../../context/TerrainContext";
 import map from "../../../map.json";
 import ScrollContainer from "react-indiana-drag-scroll";
-import ArmyStageComp from "../../components/GameComp/ArmyStageComp";
+import ArmyInfoModal from "../../components/BootstrapComp/ArmyInfoModal";
 import CastleWarning from "../../components/GameComp/CastleWarning";
 import ArmyWarning from "../../components/GameComp/ArmyWarning";
 import ArmyMoveWarning from "../../components/GameComp/ArmyMoveWarning";
@@ -25,6 +25,7 @@ function Game() {
       {isArmyMoveStage && <ArmyMoveWarning />}
       {isCastleSettled && <ArmyProgressComp />}
       {(myCastlePosition && (myCastlePosition.length === 0) && isCastleDeployedBefore && isCastleSettled) && <LoserWarning />}
+      {isCastleSettled && <ArmyInfoModal />}
       <ScrollContainer
         className="scroll-container"
         style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}

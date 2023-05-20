@@ -107,3 +107,26 @@
 .progress-text {
     font-size: 16px;
 }
+
+/* Army position show effect*/
+#myArmy {
+    border: 1px solid black;
+}
+
+.animate-border {
+    animation: borderAnimation 3s infinite alternate;
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-width: 1px;
+    }
+
+    50% {
+        border-width: 5px;
+    }
+
+    100% {
+        border-width: 1px;
+    }
+}
