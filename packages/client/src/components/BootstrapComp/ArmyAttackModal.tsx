@@ -73,7 +73,7 @@ function ArmyAttackModal() {
               description: "You've defeated the enemy army. Congrats!",
               status: 'success',
               duration: 9000,
-              position: "top-left",
+              position: "top-right",
               isClosable: true,
             })
           )
@@ -85,7 +85,7 @@ function ArmyAttackModal() {
               description: "You've lost the war. Nice try!",
               status: 'error',
               duration: 9000,
-              position: "top-left",
+              position: "top-right",
               isClosable: true,
             })
           )
@@ -97,7 +97,7 @@ function ArmyAttackModal() {
               description: "All soldiers in the battle field are dead for the both side. Draw!",
               status: 'info',
               duration: 9000,
-              position: "top-left",
+              position: "top-right",
               isClosable: true,
             })
           )

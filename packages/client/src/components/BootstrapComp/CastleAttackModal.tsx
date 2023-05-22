@@ -72,7 +72,7 @@ function CastleAttackModal() {
             description: "You've captured the enemy's castle. You can use the new castle!",
             status: 'success',
             duration: 9000,
-            position: "top-left",
+            position: "top-right",
             isClosable: true,
           })
         )
@@ -84,7 +84,7 @@ function CastleAttackModal() {
             description: "You could not capture the enemy's castle. Nice try!",
             status: 'error',
             duration: 9000,
-            position: "top-left",
+            position: "top-right",
             isClosable: true,
           })
         )
@@ -96,7 +96,7 @@ function CastleAttackModal() {
             description: "All the soldiers are dead for the both side. Draw!",
             status: 'info',
             duration: 9000,
-            position: "top-left",
+            position: "top-right",
             isClosable: true,
           })
         )
