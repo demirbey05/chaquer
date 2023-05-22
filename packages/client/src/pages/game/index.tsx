@@ -10,6 +10,7 @@ import LoserWarning from "../../components/GameComp/LoserWarning";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import ArmyProgressComp from "../../components/GameComp/ArmyProgressComp";
+import AudioControlComp from "../../components/BootstrapComp/AudioControlComp";
 
 function Game() {
   const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage, isCastleDeployedBefore } = useTerrain();
@@ -26,6 +27,7 @@ function Game() {
       {isCastleSettled && <ArmyProgressComp />}
       {(myCastlePosition && (myCastlePosition.length === 0) && isCastleDeployedBefore && isCastleSettled) && <LoserWarning />}
       {isCastleSettled && <ArmyInfoModal />}
+      {isCastleSettled && <AudioControlComp />}
       <ScrollContainer
         className="scroll-container"
         style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}

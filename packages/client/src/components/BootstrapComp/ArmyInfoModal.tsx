@@ -1,4 +1,4 @@
-import { Button, Link } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import archerImg from "../../images/archer.png";
 import cavalryImg from "../../images/cavalry.png";
 import swordsmanImg from "../../images/swordsman.png";
@@ -117,7 +117,6 @@ function ArmyInfoModal() {
                         )
                     }
                 </div>
-
             </div>
         </>
     )

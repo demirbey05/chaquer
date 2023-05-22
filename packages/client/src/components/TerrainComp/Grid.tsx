@@ -205,8 +205,7 @@ export function Grid(data: DataProp) {
     //Checks that if the user has already settled the castle
     if (myCastlePosition && myCastlePosition.length > 0) {
       myCastlePosition.map((position: any) => {
-        document.getElementById(`${position.y},${position.x}`)!.style.border =
-          "2px solid rgb(245, 169, 6)";
+        document.getElementById(`${position.y},${position.x}`)!.style.border = "2px solid rgb(245, 169, 6)";
       });
     }
 
@@ -359,21 +358,21 @@ export function Grid(data: DataProp) {
     if (isArmyStage && myCastlePosition) {
       myCastlePosition.map((position: any) => {
         getManhattanPositions(position).map(
-          (data) =>
-            canCastleBeSettle(values[data.x][data.y]) &&
-            document
-              .getElementById(`${data.y},${data.x}`)
-              ?.classList.add("borderHoverArmy")
+          (data) => {
+            if (data.x >= 0 && data.y >= 0 && data.x < 50 && data.y < 50) {
+              canCastleBeSettle(values[data.x][data.y]) && document.getElementById(`${data.y},${data.x}`)?.classList.add("borderHoverArmy")
+            }
+          }
         );
       });
     } else if (!isArmyStage && myCastlePosition) {
       myCastlePosition.map((position: any) => {
         getManhattanPositions(position).map(
-          (data) =>
-            canCastleBeSettle(values[data.x][data.y]) &&
-            document
-              .getElementById(`${data.y},${data.x}`)
-              ?.classList.remove("borderHoverArmy")
+          (data) => {
+            if (data.x >= 0 && data.y >= 0 && data.x < 50 && data.y < 50) {
+              canCastleBeSettle(values[data.x][data.y]) && document.getElementById(`${data.y},${data.x}`)?.classList.remove("borderHoverArmy")
+            }
+          }
         );
       });
     }
