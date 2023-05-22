@@ -45,6 +45,7 @@ export function Grid(data: DataProp) {
     fromArmyPosition,
     setFromArmyPosition,
     isCastleSettled,
+    setIsCastleSettled,
     setTempCastle,
     isArmyStage,
     setArmyPosition,
@@ -207,6 +208,7 @@ export function Grid(data: DataProp) {
       myCastlePosition.map((position: any) => {
         document.getElementById(`${position.y},${position.x}`)!.style.border = "2px solid rgb(245, 169, 6)";
       });
+      setIsCastleSettled(true);
     }
 
     if (castlePositions) {
@@ -218,7 +220,7 @@ export function Grid(data: DataProp) {
     }
 
     return () => {
-      if (myCastlePosition) {
+      if (myCastlePosition && myCastlePosition.length > 0) {
         myCastlePosition.map((position: any) => {
           document.getElementById(`${position.y},${position.x}`)!.style.border = "";
         });

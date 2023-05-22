@@ -39,16 +39,16 @@ function ArmyInfoModal() {
     // Army Info Drag-able functions
     const [pos, setPos] = useState({ x: 0, y: 0 });
 
-    const dragMouseDown = (e) => {
+    const dragMouseDown = (e: any) => {
         e.preventDefault();
         const pos3 = e.clientX;
         const pos4 = e.clientY;
 
-        const elementDrag = (e) => {
+        const elementDrag = (e: any) => {
             e.preventDefault();
             const dx = pos3 - e.clientX;
             const dy = pos4 - e.clientY;
-            const newX = dx - pos.x;
+            const newX = pos.x - dx;
             const newY = pos.y - dy;
             setPos({ x: newX, y: newY });
             pos3 = e.clientX;
@@ -71,16 +71,16 @@ function ArmyInfoModal() {
                 height: "60px",
                 width: "60px",
                 position: "absolute",
-                right: 0,
+                left: 0,
                 top: 0,
                 bottom: 0,
-                marginTop: "25px",
+                marginTop: "90px",
                 fontSize: "30px"
             }} type="button" colorScheme="yellow" data-bs-toggle="offcanvas" data-bs-target="#armyInfoModal" aria-controls="staticBackdrop">
                 ⚔️
             </Button>
 
-            <div style={{ height: "625px", marginTop: "25px", padding: "10px", top: pos.y, right: pos.x }} onMouseDown={dragMouseDown} className="offcanvas offcanvas-end" data-bs-keyboard="false" data-bs-backdrop="false" id="armyInfoModal" aria-labelledby="staticBackdropLabel">
+            <div style={{ height: "625px", marginTop: "90px", padding: "10px", top: pos.y, left: pos.x }} onMouseDown={dragMouseDown} className="offcanvas offcanvas-start" data-bs-keyboard="false" data-bs-backdrop="false" id="armyInfoModal" aria-labelledby="staticBackdropLabel">
                 <div className="offcanvas-header" style={{ cursor: "move" }}>
                     <h5 className="offcanvas-title" id="staticBackdropLabel">My Army Details</h5>
                     <button type="button" data-bs-dismiss="offcanvas" aria-label="Close">&#10008;</button>

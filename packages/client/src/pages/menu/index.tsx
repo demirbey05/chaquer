@@ -1,8 +1,7 @@
 import { Grid } from "../../components/TerrainComp/Grid";
 import { generatePerlinValues } from "../../terrain-helper/utils";
-import { MouseEvent } from "react";
-import MySpinner from "../../components/ChakraComp/TerrainSpinner";
-import MyModal from "../../components/ChakraComp/TerrainInfoModal";
+import TerrainSpinner from "../../components/ChakraComp/TerrainSpinner";
+import TerrainInfoModal from "../../components/ChakraComp/TerrainInfoModal";
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext.js";
 import map from "../../../map.json";
@@ -10,7 +9,7 @@ import chaquerImg from '../../images/chaquer_bg.png';
 import { Link } from "react-router-dom";
 import { useMUD } from "../../MUDContext";
 import { flatten2D } from "../../utils/terrainArray";
-import { ethers, Contract } from "ethers";
+import { ethers } from "ethers";
 import { useComponentValue } from "@latticexyz/react";
 
 function Menu() {
@@ -28,7 +27,7 @@ function Menu() {
 
   const { components, systems, singletonEntity, world } = useMUD();
 
-  const handleRefresh = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleRefresh = (event: any) => {
     setIsLoading(true);
     event.preventDefault();
     const { valuesArray, perm } = generatePerlinValues(height, width);
@@ -46,8 +45,9 @@ function Menu() {
     saveTerrain();
     const data: string = ethers.utils.hexlify(flatten2D(map));
     const tx = await systems["system.Init"].execute(data);
-    const tc = await tx.wait();
+    await tx.wait();
   };
+
 
   const terrainStyles = [8, 14];
   const values = map;
@@ -64,7 +64,7 @@ function Menu() {
         <div className="row align-items-center justify-content-center h-screen items-center">
           {isLoading === true ? (
             <div className="col-8 align-items-center justify-content-center">
-              ( <MySpinner></MySpinner> )
+              <TerrainSpinner />
             </div>
           ) : (
             <>
@@ -119,8 +119,8 @@ function Menu() {
               </Button>
             </div>
             {refresh !== 0 && (
-              <div className="text-center">
-                <MyModal />
+              <div className="text-center mt-2 mb-2">
+                <TerrainInfoModal />
               </div>
             )}
           </div>

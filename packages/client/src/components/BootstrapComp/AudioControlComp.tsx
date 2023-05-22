@@ -5,7 +5,7 @@ import { SettingsIcon } from '@chakra-ui/icons'
 import { FaPlay, FaStop } from 'react-icons/fa'
 
 function AudioControlComp() {
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true);
 
     useEffect(() => {
         setIsPlaying(true); // Start playing the audio when the component mounts
