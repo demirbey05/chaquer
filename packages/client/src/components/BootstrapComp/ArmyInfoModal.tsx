@@ -4,8 +4,9 @@ import cavalryImg from "../../images/cavalry.png";
 import swordsmanImg from "../../images/swordsman.png";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useMyArmy } from "../../hooks/useMyArmy";
-import React from "react";
+import React, { useState } from "react";
 
+// Scroll to div by id as middle of the screen
 const scrollToDiv = (targetId: any) => {
     const targetDiv = document.getElementById(targetId);
     const scrollOptions: any = {
@@ -23,6 +24,7 @@ const scrollToDiv = (targetId: any) => {
 function ArmyInfoModal() {
     const myArmyPosition: any = useMyArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
 
+    // Find the army on the map
     const handleClick = (targetId: any) => {
         scrollToDiv(targetId);
 
@@ -32,6 +34,34 @@ function ArmyInfoModal() {
         setTimeout(function () {
             myDiv?.classList.remove("animate-border");
         }, 6000);
+    };
+
+    // Army Info Drag-able functions
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+
+    const dragMouseDown = (e) => {
+        e.preventDefault();
+        const pos3 = e.clientX;
+        const pos4 = e.clientY;
+
+        const elementDrag = (e) => {
+            e.preventDefault();
+            const dx = pos3 - e.clientX;
+            const dy = pos4 - e.clientY;
+            const newX = dx - pos.x;
+            const newY = pos.y - dy;
+            setPos({ x: newX, y: newY });
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+        };
+
+        const closeDragElement = () => {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        };
+
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
     };
 
     return (
@@ -50,8 +80,8 @@ function ArmyInfoModal() {
                 ⚔️
             </Button>
 
-            <div style={{ height: "625px", marginTop: "25px", padding: "10px" }} className="offcanvas offcanvas-end" data-bs-keyboard="false" data-bs-backdrop="false" id="armyInfoModal" aria-labelledby="staticBackdropLabel">
-                <div className="offcanvas-header">
+            <div style={{ height: "625px", marginTop: "25px", padding: "10px", top: pos.y, right: pos.x }} onMouseDown={dragMouseDown} className="offcanvas offcanvas-end" data-bs-keyboard="false" data-bs-backdrop="false" id="armyInfoModal" aria-labelledby="staticBackdropLabel">
+                <div className="offcanvas-header" style={{ cursor: "move" }}>
                     <h5 className="offcanvas-title" id="staticBackdropLabel">My Army Details</h5>
                     <button type="button" data-bs-dismiss="offcanvas" aria-label="Close">&#10008;</button>
                 </div>
