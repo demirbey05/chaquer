@@ -8,6 +8,10 @@ import { ComponentBrowser } from "./ComponentBrowser";
 import { TerrainProvider } from "./context/TerrainContext";
 import { ChakraProvider } from "@chakra-ui/react";
 import { PlayerProvider } from './context/PlayerContext';
+import { CastleProvider } from './context/CastleContext';
+import { ArmyProvider } from "./context/ArmyContext";
+import { AttackProvider } from "./context/AttackContext";
+
 
 const rootElement = document.getElementById("react-root");
 if (!rootElement) throw new Error("React root not found");
@@ -17,13 +21,19 @@ const root = ReactDOM.createRoot(rootElement);
 setup().then((result) => {
   root.render(
     <MUDProvider {...result}>
-      <TerrainProvider>
-        <PlayerProvider>
-          <ChakraProvider>
-            <App />
-          </ChakraProvider>
-        </PlayerProvider>
-      </TerrainProvider>
+      <ChakraProvider>
+        <TerrainProvider>
+          <AttackProvider>
+            <ArmyProvider>
+              <CastleProvider>
+                <PlayerProvider>
+                  <App />
+                </PlayerProvider>
+              </CastleProvider>
+            </ArmyProvider>
+          </AttackProvider>
+        </TerrainProvider>
+      </ChakraProvider>
       <ComponentBrowser />
     </MUDProvider>
   );

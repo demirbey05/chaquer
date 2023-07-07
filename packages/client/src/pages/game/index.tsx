@@ -2,17 +2,22 @@ import { Grid } from "../../components/TerrainComp/Grid";
 import { useTerrain } from "../../context/TerrainContext";
 import map from "../../../map.json";
 import ScrollContainer from "react-indiana-drag-scroll";
-import ArmyStageComp from "../../components/GameComp/ArmyStageComp";
-import CastleWarning from "../../components/GameComp/CastleWarning";
-import ArmyWarning from "../../components/GameComp/ArmyWarning";
-import ArmyMoveWarning from "../../components/GameComp/ArmyMoveWarning";
+import ArmyInfoModal from "../../components/ArmyComp/ArmyInfoModal";
+import CastleWarning from "../../components/CastleComp/CastleWarning";
+import ArmyWarning from "../../components/ArmyComp/ArmyWarning";
+import ArmyMoveWarning from "../../components/ArmyComp/ArmyMoveWarning";
 import LoserWarning from "../../components/GameComp/LoserWarning";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
-import ArmyProgressComp from "../../components/GameComp/ArmyProgressComp";
+import ArmyProgressComp from "../../components/ArmyComp/ArmyProgressComp";
+import AudioControlComp from "../../components/AudioComp/AudioControlComp";
+import { useCastle } from "../../context/CastleContext";
+import { useArmy } from "../../context/ArmyContext";
 
 function Game() {
-  const { width, height, isCastleSettled, isArmyStage, isArmyMoveStage, isCastleDeployedBefore } = useTerrain();
+  const { width, height } = useTerrain();
+  const { isCastleDeployedBefore, isCastleSettled } = useCastle();
+  const { isArmyStage, isArmyMoveStage } = useArmy();
   const values = map;
   const myCastlePosition = useCastlePositionByAddress(getBurnerWallet().address.toLocaleLowerCase());
 
@@ -25,6 +30,8 @@ function Game() {
       {isArmyMoveStage && <ArmyMoveWarning />}
       {isCastleSettled && <ArmyProgressComp />}
       {(myCastlePosition && (myCastlePosition.length === 0) && isCastleDeployedBefore && isCastleSettled) && <LoserWarning />}
+      {isCastleSettled && <ArmyInfoModal />}
+      {isCastleSettled && <AudioControlComp />}
       <ScrollContainer
         className="scroll-container"
         style={{ zIndex: "0", height: "100vh", overflow: "scroll" }}
