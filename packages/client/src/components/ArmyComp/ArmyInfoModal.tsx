@@ -20,7 +20,6 @@ const scrollToDiv = (targetId: any) => {
     }
 };
 
-
 function ArmyInfoModal() {
     const myArmyPosition: any = useMyArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
 

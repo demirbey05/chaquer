@@ -4,14 +4,14 @@ import { Button, NumberInput, NumberInputField } from "@chakra-ui/react";
 import archerImg from "../../images/archer.png";
 import cavalryImg from "../../images/cavalry.png";
 import swordsmanImg from "../../images/swordsman.png";
-import { useState, useEffect, useRef } from "react";
-import { utils } from "ethers";
+import { useState, useEffect } from "react";
 import { getErrorLog } from "../../utils/getErrorLog";
+import { useArmy } from "../../context/ArmyContext";
 
 function ArmySettleModal() {
-  const { armyPosition, setIsArmyStage, setIsArmySettled, provider } = useTerrain();
+  const { abiCoder, provider } = useTerrain();
+  const { armyPosition, setIsArmyStage, setIsArmySettled } = useArmy();
   const { systems } = useMUD();
-  const { current: abiCoder } = useRef(new utils.AbiCoder());
 
   const [swordsmanCount, setSwordsmanCount] = useState<string>("");
   const [archerCount, setArcherCount] = useState<string>("");
@@ -61,7 +61,6 @@ function ArmySettleModal() {
       setIsArmySettled(true);
       setIsArmyStage(false);
       if (tx) {
-        // await tx
         await tx.wait();
       }
     } catch (err: any) {
@@ -107,9 +106,7 @@ function ArmySettleModal() {
                     <div className="row justify-content-center mt-2">
                       <NumberInput min={0}>
                         <NumberInputField
-                          onChange={(e: any) =>
-                            setSwordsmanCount(e.target.value)
-                          }
+                          onChange={(e: any) => setSwordsmanCount(e.target.value)}
                           onClick={(e: any) => e.target.select()}
                           maxLength={3}
                         />

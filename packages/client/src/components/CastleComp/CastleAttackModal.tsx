@@ -5,19 +5,18 @@ import { findIDFromPosition } from "../../utils/armyID";
 import { ethers } from "ethers";
 import { useMUD } from "../../MUDContext";
 import { useToast } from '@chakra-ui/react'
+import { useAttack } from "../../context/AttackContext";
 
 function CastleAttackModal() {
   const { components, systems, world } = useMUD();
-  const {
-    setMyArmyConfig,
+  const { abiCoder } = useTerrain();
+  const { setMyArmyConfig,
     setEnemyArmyConfig,
     myArmyConfig,
     enemyArmyConfig,
     setIsAttackStage,
     attackFromArmyPosition,
-    attackToArmyPosition,
-    abiCoder,
-  } = useTerrain();
+    attackToArmyPosition } = useAttack();
   const toast = useToast()
 
   const handleAttackLater = () => {

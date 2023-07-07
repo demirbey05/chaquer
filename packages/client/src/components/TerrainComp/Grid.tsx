@@ -2,10 +2,11 @@ import "../../styles/globals.css";
 import { useEffect, useState, useRef } from "react";
 import { TerrainType } from "../../terrain-helper/types";
 import { useTerrain } from "../../context/TerrainContext";
-import CastleSettleModal from "../BootstrapComp/CastleSettleModal";
-import ArmySettleModal from "../BootstrapComp/ArmySettleModal";
-import AttackModal from "../BootstrapComp/ArmyAttackModal";
-import CastleAttackModal from "../BootstrapComp/CastleAttackModal";
+import { useCastle } from "../../context/CastleContext";
+import CastleSettleModal from "../CastleComp/CastleSettleModal";
+import ArmySettleModal from "../ArmyComp/ArmySettleModal";
+import AttackModal from "../ArmyComp/ArmyAttackModal";
+import CastleAttackModal from "../CastleComp/CastleAttackModal";
 import { useCastlePositions } from "../../hooks/useCastlePositions";
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useCastlePositionByAddress } from "../../hooks/useCastlePositionByAddress";
@@ -22,6 +23,8 @@ import { isEnemyArmy } from "../../utils/isEnemyArmy";
 import { getMyArmyConfigByPosition, getEnemyArmyConfigByPosition } from "../../utils/getArmyConfigByPosition";
 import { getManhattanPositions } from "../../utils/getManhattanPositions";
 import { isEnemyCastle } from "../../utils/isEnemyCastle";
+import { useArmy } from "../../context/ArmyContext";
+import { useAttack } from "../../context/AttackContext";
 
 export type DataProp = {
   width: number;
@@ -39,27 +42,22 @@ export function Grid(data: DataProp) {
   const columns = Array.from({ length: width }, (v, i) => i);
 
   const { components, systems, world } = useMUD();
-  const {
-    setIsArmyMoveStage,
-    isArmyMoveStage,
-    fromArmyPosition,
-    setFromArmyPosition,
-    isCastleSettled,
-    setIsCastleSettled,
-    setTempCastle,
-    isArmyStage,
-    setArmyPosition,
-    setNumberOfArmy,
-    numberOfArmy,
-    setAttackFromArmyPosition,
+  const { abiCoder } = useTerrain();
+  const { setAttackFromArmyPosition,
     setAttackToArmyPosition,
     isAttackStage,
     setIsAttackStage,
     setMyArmyConfig,
-    setEnemyArmyConfig,
-    abiCoder,
-    setIsArmyStage,
-  } = useTerrain();
+    setEnemyArmyConfig } = useAttack();
+  const { setIsArmyMoveStage,
+    isArmyMoveStage,
+    fromArmyPosition,
+    setFromArmyPosition,
+    isArmyStage,
+    setArmyPosition,
+    setNumberOfArmy,
+    numberOfArmy, setIsArmyStage } = useArmy();
+  const { isCastleSettled, setIsCastleSettled, setTempCastle } = useCastle();
 
   const [tempArmyPos, setTempArmyPos] = useState<any>();
   const movingArmyId = useRef<EntityID>("0" as EntityID);

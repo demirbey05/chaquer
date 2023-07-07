@@ -1,7 +1,7 @@
 import { Grid } from "../../components/TerrainComp/Grid";
 import { generatePerlinValues } from "../../terrain-helper/utils";
-import TerrainSpinner from "../../components/ChakraComp/TerrainSpinner";
-import TerrainInfoModal from "../../components/ChakraComp/TerrainInfoModal";
+import TerrainSpinner from "../../components/MenuComp/TerrainSpinner";
+import TerrainInfoModal from "../../components/MenuComp/TerrainInfoModal";
 import { Button } from "@chakra-ui/react";
 import { useTerrain } from "../../context/TerrainContext.js";
 import map from "../../../map.json";

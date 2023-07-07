@@ -1,9 +1,9 @@
-import { useTerrain } from "../../context/TerrainContext";
 import { useMUD } from "../../MUDContext";
 import { Button } from "@chakra-ui/react";
+import { useCastle } from "../../context/CastleContext";
 
 function CastleSettleModal() {
-  const { isCastleSettled, tempCastle, setCastle, setIsCastleSettled, setIsCastleDeployedBefore } = useTerrain();
+  const { isCastleSettled, tempCastle, setCastle, setIsCastleDeployedBefore, setIsCastleSettled } = useCastle();
   const { systems } = useMUD();
 
   const handleClick = async () => {

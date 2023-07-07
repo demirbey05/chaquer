@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import "../../styles/globals.css";
-import { useTerrain } from '../../context/TerrainContext';
 import { getBurnerWallet } from "../../mud/getBurnerWallet";
 import { useMyArmy } from '../../hooks/useMyArmy';
 import { Tooltip } from '@chakra-ui/react'
+import { useArmy } from '../../context/ArmyContext';
 
 function ArmyProgressComp() {
-    const { numberOfArmy, isArmyMoveStage } = useTerrain();
+    const { numberOfArmy, isArmyMoveStage } = useArmy();
     const myArmyPosition: any = useMyArmy(getBurnerWallet().address.toLocaleLowerCase())[0];
 
     useEffect(() => {
